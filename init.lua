@@ -17,6 +17,19 @@ if minetest.get_modpath('default') then
    table.insert(drinks.drink_table, {'cactus', 'Cactus', '#96F97B'})
 end
 
+if minetest.get_modpath('bushes_classic') then
+   drinks.juiceable['blackberry'] = true
+   drinks.juiceable['blueberry'] = true
+   drinks.juiceable['gooseberry'] = true
+   drinks.juiceable['raspberry'] = true
+   drinks.juiceable['strawberry'] = true
+   table.insert(drinks.drink_table, {'blackberry', 'Blackberry', '#581845'})
+   table.insert(drinks.drink_table, {'blueberry', 'Blueberry', '#521dcb'})
+   table.insert(drinks.drink_table, {'gooseberry', 'Gooseberry', '#9cf57c'})
+   table.insert(drinks.drink_table, {'raspberry', 'Raspberry', '#C70039'})
+   table.insert(drinks.drink_table, {'strawberry', 'Strawberry', '#ff3636'})
+end
+
 if minetest.get_modpath('thirsty') then
    dofile(minetest.get_modpath('drinks')..'/drinks.lua')
 else

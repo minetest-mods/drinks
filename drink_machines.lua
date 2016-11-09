@@ -74,7 +74,7 @@ minetest.register_node('drinks:juice_press', {
                end
             end
             if vessel == 'vessels:glass_bottle' then
-               if instack:get_count() >= 4 then
+               if instack:get_count() >= 8 then
                   meta:set_string('container', 'jbo_')
                   meta:set_string('fruitnumber', 8)
                   meta:set_string('infotext', 'Juicing...')
@@ -97,7 +97,7 @@ minetest.register_node('drinks:juice_press', {
                if instack:get_count() >= 2 then
                   local under_node = {x=pos.x, y=pos.y-1, z=pos.z}
                   local under_node_name = minetest.get_node_or_nil(under_node)
-                  if under_node_name.name == 'drink:liquid_barrel' then
+                  if under_node_name.name == 'drinks:liquid_barrel' then
                      local meta_u = minetest.env:get_meta(under_node)
                      local barrel_fruit = meta_u:get_string('fruit')
                      if fruit == barrel_fruit or barrel_fruit == 'empty' then

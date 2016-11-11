@@ -179,7 +179,7 @@ minetest.register_node('drinks:juice_press', {
    end,
 })
 
-function drinks.drinks_barrel_sub(liq_vol, ves_typ, pos)
+function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
    local meta = minetest.env:get_meta(pos)
    local fullness = tonumber(meta:get_string('fullness'))
    if fullness - liq_vol < 0 then
@@ -189,10 +189,14 @@ function drinks.drinks_barrel_sub(liq_vol, ves_typ, pos)
    local inv = meta:get_inventory()
    local fullness = fullness - liq_vol
    meta:set_string('fullness', fullness)
-   meta:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/128)*100))..' % full.')
-   meta:set_string('formspec', drinks.barrel_formspec(fullness))
+   meta:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/ves_vol)*100))..' % full.')
+   if ves_vol == 128 then
+      meta:set_string('formspec', drinks.barrel_formspec(fullness))
+   end
+   if ves_vol == 256 then
+      meta:set_string('formspec', drinks.silo_formspec(fullness))
+   end
    if ves_typ == 'jcu' or ves_typ == 'jbo' or ves_typ == 'jbu' then
-      print ('vessel is '..ves_typ..'. fruit is '..fruit)
       inv:set_stack('dst', 1, 'drinks:'..ves_typ..'_'..fruit)
    end
    if ves_typ == 'thirsty:bronze_canteen' then
@@ -204,10 +208,10 @@ function drinks.drinks_barrel_sub(liq_vol, ves_typ, pos)
    end
 end
 
-function drinks.drinks_barrel_add(liq_vol, ves_typ, pos)
+function drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos)
    local meta = minetest.env:get_meta(pos)
    local fullness = tonumber(meta:get_string('fullness'))
-   if fullness + liq_vol > 128 then
+   if fullness + liq_vol > ves_vol then
       return
    else
    local fruit = meta:get_string('fruit')
@@ -215,29 +219,41 @@ function drinks.drinks_barrel_add(liq_vol, ves_typ, pos)
    local fullness = fullness + liq_vol
    meta:set_string('fullness', fullness)
    inv:set_stack('src', 1, ves_typ)
-   meta:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/128)*100))..' % full.')
-   meta:set_string('formspec', drinks.barrel_formspec(fullness))
+   meta:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/ves_vol)*100))..' % full.')
+   if ves_vol == 256 then
+      meta:set_string('formspec', drinks.silo_formspec(fullness))
+   end
+   if ves_vol == 128 then
+      meta:set_string('formspec', drinks.barrel_formspec(fullness))
+   end
    end
 end
 
 function drinks.drinks_barrel(pos, inputstack)
    local meta = minetest.env:get_meta(pos)
    local vessel = string.sub(inputstack, 8, 10)
-   print (vessel)
    if vessel == 'jcu' then
-      local liq_vol = 2
-      local ves_typ = 'vessels:drinking_glass'
-      drinks.drinks_barrel_add(liq_vol, ves_typ, pos)
+      drinks.drinks_liquid_add(2, 'vessels:drinking_glass', 128, pos)
    end
    if vessel == 'jbo' then
-      local liq_vol = 4
-      local ves_typ = 'vessels:glass_bottle'
-      drinks.drinks_barrel_add(liq_vol, ves_typ, pos)
+      drinks.drinks_liquid_add(4, 'vessels:glass_bottle', 128, pos)
    end
    if vessel == 'jbu' then
-      local liq_vol = 16
-      local ves_typ = 'bucket:bucket_empty'
-      drinks.drinks_barrel_add(liq_vol, ves_typ, pos)
+      drinks.drinks_liquid_add(16, 'bucket:bucket_empty', 128, pos)
+   end
+end
+
+function drinks.drinks_silo(pos, inputstack)
+   local meta = minetest.env:get_meta(pos)
+   local vessel = string.sub(inputstack, 8, 10)
+   if vessel == 'jcu' then
+      drinks.drinks_liquid_add(2, 'vessels:drinking_glass', 256, pos)
+   end
+   if vessel == 'jbo' then
+      drinks.drinks_liquid_add(4, 'vessels:glass_bottle', 256, pos)
+   end
+   if vessel == 'jbu' then
+      drinks.drinks_liquid_add(16, 'bucket:bucket_empty', 256, pos)
    end
 end
 
@@ -286,7 +302,6 @@ minetest.register_node('drinks:liquid_barrel', {
       local inputstack = instack:get_name()
       local outputstack = outstack:get_name()
       local fruit = string.sub(inputstack, 12, -1)
-      print ('fruit added to barrel is '..fruit)
       local fruit_in = meta:get_string('fruit')
       if fruit_in == 'empty' then
          meta:set_string('fruit', fruit)
@@ -298,19 +313,19 @@ minetest.register_node('drinks:liquid_barrel', {
          drinks.drinks_barrel(pos, inputstack)
       end
       if outputstack == 'vessels:drinking_glass' then
-         drinks.drinks_barrel_sub(2, 'jcu', pos)
+         drinks.drinks_liquid_sub(2, 'jcu', 128, pos)
       end
       if outputstack == 'vessels:glass_bottle' then
-         drinks.drinks_barrel_sub(4, 'jbo', pos)
+         drinks.drinks_liquid_sub(4, 'jbo', 128, pos)
       end
       if outputstack == 'bucket:bucket_empty' then
-         drinks.drinks_barrel_sub(16, 'jbu', pos)
+         drinks.drinks_liquid_sub(16, 'jbu', 128, pos)
       end
       if outputstack == 'thirsty:steel_canteen' then
-         drinks.drinks_barrel_sub(20, 'thirsty:steel_canteen', pos)
+         drinks.drinks_liquid_sub(20, 'thirsty:steel_canteen', 128, pos)
       end
       if outputstack == 'thirsty:bronze_canteen' then
-         drinks.drinks_barrel_sub(30, 'thirsty:bronze_canteen', pos)
+         drinks.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 128, pos)
       end
    end,
    on_receive_fields = function(pos, formname, fields, sender)
@@ -320,6 +335,89 @@ minetest.register_node('drinks:liquid_barrel', {
          meta:set_string('fullness', 0)
          meta:set_string('fruit', 'empty')
          meta:set_string('infotext', 'Empty Drink Barrel')
+         meta:set_string('formspec', drinks.barrel_formspec(fullness))
+      end
+   end,
+})
+
+minetest.register_node('drinks:liquid_silo', {
+   description = 'Silo of Liquid',
+   drawtype = 'mesh',
+   mesh = 'drinks_silo.obj',
+   tiles = {name='drinks_silo.png'},
+   groups = {choppy=2, dig_immediate=2,},
+   paramtype = 'light',
+   paramtype2 = 'facedir',
+   selection_box = {
+      type = 'fixed',
+      fixed = {-.5, -.5, -.5, .5, 1.5, .5},
+      },
+   collision_box = {
+      type = 'fixed',
+      fixed = {-.5, -.5, -.5, .5, .5, .5},
+      },
+   on_construct = function(pos)
+      local meta = minetest.env:get_meta(pos)
+      local inv = meta:get_inventory()
+      inv:set_size('main', 8*4)
+      inv:set_size('src', 1)
+      inv:set_size('dst', 1)
+      meta:set_string('fullness', 0)
+      meta:set_string('fruit', 'empty')
+      meta:set_string('infotext', 'Empty Drink Silo')
+      meta:set_string('formspec', 'size[8,8]'..
+      'label[0,0;Fill the silo with the drink of your choice,]'..
+      'label[0,.4;you can only add more of the same type of drink.]'..
+      'label[4.5,1.2;Add liquid ->]'..
+      'label[.75,1.75;The Silo is empty]'..
+      'label[4.5,2.25;Take liquid ->]'..
+      'label[2,3.2;(This empties the silo completely)]'..
+      'button[0,3;2,1;purge;Purge]'..
+      'list[current_name;src;6.5,1;1,1;]'..
+      'list[current_name;dst;6.5,2;1,1;]'..
+      'list[current_player;main;0,4;8,5;]')
+   end,
+   on_metadata_inventory_put = function(pos, listname, index, stack, player)
+      local meta = minetest.env:get_meta(pos)
+      local inv = meta:get_inventory()
+      local instack = inv:get_stack("src", 1)
+      local outstack = inv:get_stack('dst', 1)
+      local inputstack = instack:get_name()
+      local outputstack = outstack:get_name()
+      local fruit = string.sub(inputstack, 12, -1)
+      local fruit_in = meta:get_string('fruit')
+      if fruit_in == 'empty' then
+         meta:set_string('fruit', fruit)
+         local vessel = string.sub(inputstack, 8, 10)
+         drinks.drinks_barrel(pos, inputstack)
+      end
+      if fruit == fruit_in then
+         local vessel = string.sub(inputstack, 8, 10)
+         drinks.drinks_silo(pos, inputstack)
+      end
+      if outputstack == 'vessels:drinking_glass' then
+         drinks.drinks_liquid_sub(2, 'jcu', 256, pos)
+      end
+      if outputstack == 'vessels:glass_bottle' then
+         drinks.drinks_liquid_sub(4, 'jbo', 256, pos)
+      end
+      if outputstack == 'bucket:bucket_empty' then
+         drinks.drinks_liquid_sub(16, 'jbu', 256, pos)
+      end
+      if outputstack == 'thirsty:steel_canteen' then
+         drinks.drinks_liquid_sub(20, 'thirsty:steel_canteen', 256, pos)
+      end
+      if outputstack == 'thirsty:bronze_canteen' then
+         drinks.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 256, pos)
+      end
+   end,
+   on_receive_fields = function(pos, formname, fields, sender)
+      if fields['purge'] then
+         local meta = minetest.env:get_meta(pos)
+         local fullness = 0
+         meta:set_string('fullness', 0)
+         meta:set_string('fruit', 'empty')
+         meta:set_string('infotext', 'Empty Drink Silo')
          meta:set_string('formspec', drinks.barrel_formspec(fullness))
       end
    end,

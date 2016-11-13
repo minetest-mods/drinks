@@ -18,6 +18,15 @@ minetest.register_craft({
          }
 })
 
+minetest.register_craft({
+      output = 'drinks:liquid_silo',
+      recipe = {
+         {'drinks:liquid_barrel'},
+         {'drinks:liquid_barrel'},
+         {'drinks:liquid_barrel'}
+      }
+})
+
 minetest.register_node('drinks:juice_press', {
    description = 'Juice Press',
    drawtype = 'mesh',
@@ -58,7 +67,10 @@ minetest.register_node('drinks:juice_press', {
          local timer = minetest.get_node_timer(pos)
          local instack = inv:get_stack("src", 1)
          local fruitstack = instack:get_name()
-         local mod, fruit = fruitstack:match("([^:]+):([^:]+)")
+         local mod, fruit, trash = fruitstack:match("([^:]+):([^:]+)_([^:]+)")
+         print (mod)
+         print (fruit)
+         print (trash)
          if drinks.juiceable[fruit] then
             meta:set_string('fruit', fruit)
             local outstack = inv:get_stack("dst", 1)
@@ -141,7 +153,7 @@ minetest.register_node('drinks:juice_press', {
          local fullness = fullness + 2
          meta_u:set_string('fullness', fullness)
          meta_u:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/128)*100))..' % full.')
-         meta_u:set_string('formspec', drinks.liquid_storage_formspec(fullness, 128))
+         meta_u:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 128))
          if instack:get_count() >= 2 then
             timer:start(4)
          else
@@ -191,10 +203,10 @@ function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
    meta:set_string('fullness', fullness)
    meta:set_string('infotext', (math.floor((fullness/ves_vol)*100))..' % full of '..fruit..' juice.')
    if ves_vol == 128 then
-      meta:set_string('formspec', drinks.liquid_storage_formspec(fullness, 128))
+      meta:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 128))
    end
    if ves_vol == 256 then
-      meta:set_string('formspec', drinks.liquid_storage_formspec(fullness, 256))
+      meta:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 256))
    end
    if ves_typ == 'jcu' or ves_typ == 'jbo' or ves_typ == 'jbu' then
       inv:set_stack('dst', 1, 'drinks:'..ves_typ..'_'..fruit)
@@ -221,10 +233,10 @@ function drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos)
    inv:set_stack('src', 1, ves_typ)
    meta:set_string('infotext', (math.floor((fullness/ves_vol)*100))..' % full of '..fruit..' juice.')
    if ves_vol == 256 then
-      meta:set_string('formspec', drinks.liquid_storage_formspec(fullness, 128))
+      meta:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 256))
    end
    if ves_vol == 128 then
-      meta:set_string('formspec', drinks.liquid_storage_formspec(fullness, 256))
+      meta:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 128))
    end
    end
 end
@@ -283,7 +295,7 @@ minetest.register_node('drinks:liquid_barrel', {
       meta:set_string('fruit', 'empty')
       meta:set_string('infotext', 'Empty Drink Barrel')
       meta:set_string('formspec', 'size[8,8]'..
-      'label[0,0;Fill the barrel with the drink of your choice,]'..
+      'label[0,0;Fill with the drink of your choice,]'..
       'label[0,.4;you can only add more of the same type of drink.]'..
       'label[4.5,1.2;Add liquid ->]'..
       'label[.75,1.75;The barrel is empty]'..
@@ -332,10 +344,22 @@ minetest.register_node('drinks:liquid_barrel', {
       if fields['purge'] then
          local meta = minetest.env:get_meta(pos)
          local fullness = 0
+         local fruit = 'no'
          meta:set_string('fullness', 0)
          meta:set_string('fruit', 'empty')
          meta:set_string('infotext', 'Empty Drink Barrel')
-         meta:set_string('formspec', drinks.liquid_storage_formspec(fullness, 128))
+         meta:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 128))
+      end
+   end,
+   can_dig = function(pos)
+      local meta = minetest.get_meta(pos);
+      local inv = meta:get_inventory()
+      if inv:is_empty("src") and
+         inv:is_empty("dst") and
+         tonumber(meta:get_string('fullness')) == 0 then
+         return true
+      else
+         return false
       end
    end,
 })
@@ -366,7 +390,7 @@ minetest.register_node('drinks:liquid_silo', {
       meta:set_string('fruit', 'empty')
       meta:set_string('infotext', 'Empty Drink Silo')
       meta:set_string('formspec', 'size[8,8]'..
-      'label[0,0;Fill the silo with the drink of your choice,]'..
+      'label[0,0;Fill with the drink of your choice,]'..
       'label[0,.4;you can only add more of the same type of drink.]'..
       'label[4.5,1.2;Add liquid ->]'..
       'label[.75,1.75;The Silo is empty]'..
@@ -415,10 +439,22 @@ minetest.register_node('drinks:liquid_silo', {
       if fields['purge'] then
          local meta = minetest.env:get_meta(pos)
          local fullness = 0
+         local fruit = 'no'
          meta:set_string('fullness', 0)
          meta:set_string('fruit', 'empty')
          meta:set_string('infotext', 'Empty Drink Silo')
-         meta:set_string('formspec', drinks.liquid_storage_formspec(fullness, 256))
+         meta:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 256))
+      end
+   end,
+   can_dig = function(pos)
+      local meta = minetest.get_meta(pos);
+      local inv = meta:get_inventory()
+      if inv:is_empty("src") and
+         inv:is_empty("dst") and
+         tonumber(meta:get_string('fullness')) == 0 then
+         return true
+      else
+         return false
       end
    end,
 })

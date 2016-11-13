@@ -24,7 +24,6 @@ minetest.register_craftitem('drinks:jbo_'..desc, {
       local eat_func = minetest.item_eat(.5, 'vessels:glass_bottle')
       return eat_func(itemstack, user, pointed_thing)
    end,
-   print ('registered bottle of '..desc.. ' juice.')
 })
 
 minetest.register_craftitem('drinks:jbu_'..desc, {

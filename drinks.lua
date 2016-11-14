@@ -3,6 +3,7 @@ for i in ipairs (drinks.drink_table) do
    local desc = drinks.drink_table[i][1]
    local craft = drinks.drink_table[i][2]
    local color = drinks.drink_table[i][3]
+   -- The color of the drink is all done in code, so we don't need to have multiple images.
 
 --Actual Node registration
 minetest.register_craftitem('drinks:jcu_'..desc, {

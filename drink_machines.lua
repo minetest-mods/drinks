@@ -67,7 +67,9 @@ minetest.register_node('drinks:juice_press', {
          local timer = minetest.get_node_timer(pos)
          local instack = inv:get_stack("src", 1)
          local fruitstack = instack:get_name()
-         local mod, fruit, trash = fruitstack:match("([^:]+):([^:]+)_([^:]+)")
+         local mod, fruit = fruitstack:match("([^:]+):([^:]+)")
+         print (mod)
+         print (fruit)
          if drinks.juiceable[fruit] then
             meta:set_string('fruit', fruit)
             local outstack = inv:get_stack("dst", 1)

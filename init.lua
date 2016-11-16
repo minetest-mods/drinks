@@ -51,6 +51,13 @@ if minetest.get_modpath('farming_plus') then
    table.insert(drinks.drink_table, {'raspberry_item', 'Raspberry', '#C70039'})
 end
 
+if minetest.get_modpath('crops') then
+   drinks.juiceable['melon'] = true
+   drinks.juiceable['tomato'] = true
+   table.insert(drinks.drink_table, {'melon', 'Melon', '#ef4646'})
+   table.insert(drinks.drink_table, {'tomato', 'Tomato', '#d03a0e'})
+end
+
 if minetest.get_modpath('thirsty') then
    dofile(minetest.get_modpath('drinks')..'/drinks.lua')
 else

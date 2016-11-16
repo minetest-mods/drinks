@@ -5,3 +5,4 @@ hunger?
 thirsty?
 plantlife?
 farming_plus?
+crops?

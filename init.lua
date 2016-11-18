@@ -41,14 +41,14 @@ if minetest.get_modpath('farming_plus') then
    drinks.juiceable['strawberry_item'] = true
    drinks.juiceable['raspberry_item'] = true
    table.insert(drinks.drink_table, {'banana', 'Banana', '#eced9f'})
-   table.insert(drinks.drink_table, {'lemon_item', 'Lemon', '#feffaa'})
+   table.insert(drinks.drink_table, {'lemon', 'Lemon', '#feffaa'})
    table.insert(drinks.drink_table, {'melon', 'Melon', '#ef4646'})
-   table.insert(drinks.drink_table, {'orange_item', 'Orange', '#ffc417'})
-   table.insert(drinks.drink_table, {'peach_item', 'Peach', '#f2bc1e'})
-   table.insert(drinks.drink_table, {'rhubarb_item', 'Rhubarb', '#fb8461'})
-   table.insert(drinks.drink_table, {'tomato_item', 'Tomato', '#d03a0e'})
-   table.insert(drinks.drink_table, {'strawberry_item', 'Strawberry', '#ff3636'})
-   table.insert(drinks.drink_table, {'raspberry_item', 'Raspberry', '#C70039'})
+   table.insert(drinks.drink_table, {'orange', 'Orange', '#ffc417'})
+   table.insert(drinks.drink_table, {'peach', 'Peach', '#f2bc1e'})
+   table.insert(drinks.drink_table, {'rhubarb', 'Rhubarb', '#fb8461'})
+   table.insert(drinks.drink_table, {'tomato', 'Tomato', '#d03a0e'})
+   table.insert(drinks.drink_table, {'strawberry', 'Strawberry', '#ff3636'})
+   table.insert(drinks.drink_table, {'raspberry', 'Raspberry', '#C70039'})
 end
 
 if minetest.get_modpath('crops') then

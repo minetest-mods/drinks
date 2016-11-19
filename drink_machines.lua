@@ -71,7 +71,7 @@ minetest.register_node('drinks:juice_press', {
          if drinks.juiceable[fruit] then
             if string.find(fruit, '_') then
                local fruit, junk = fruit:match('([^_]+)_([^_]+)')
-               meta:set_string('fruit', fruit))
+               meta:set_string('fruit', fruit)
             else
                meta:set_string('fruit', fruit)
             end

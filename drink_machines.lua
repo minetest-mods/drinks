@@ -27,6 +27,27 @@ minetest.register_craft({
       }
 })
 
+local press_idle_formspec =
+   'size[8,7]'..
+   'label[1.5,0;Organic juice is just a squish away.]' ..
+   'label[4.3,.75;Put fruit here ->]'..
+   'label[3.5,1.75;Put container here ->]'..
+   'button[1,1;2,1;press;Start Juicing]'..
+   'list[current_name;src;6.5,.5;1,1;]'..
+   'list[current_name;dst;6.5,1.5;1,1;]'..
+   'list[current_player;main;0,3;8,4;]'
+
+local press_running_formspec =
+   'size[8,7]'..
+   'label[1.5,0;Organic juice coming right up.]' ..
+   'label[4.3,.75;Put fruit here ->]'..
+   'label[3.5,1.75;Put container here ->]'..
+   'button[1,1;2,1;press;Start Juicing]'..
+   'list[current_name;src;6.5,.5;1,1;]'..
+   'list[current_name;dst;6.5,1.5;1,1;]'..
+   'list[current_player;main;0,3;8,4;]'
+
+
 minetest.register_node('drinks:juice_press', {
    description = 'Juice Press',
    drawtype = 'mesh',
@@ -50,15 +71,7 @@ minetest.register_node('drinks:juice_press', {
       inv:set_size('src', 1)
       inv:set_size('dst', 1)
       meta:set_string('infotext', 'Empty Juice Press')
-      meta:set_string('formspec',
-         'size[8,7]'..
-         'label[1.5,0;Organic juice is just a squish away.]' ..
-         'label[4.3,.75;Put fruit here ->]'..
-         'label[3.5,1.75;Put container here ->]'..
-         'button[1,1;2,1;press;Start Juicing]'..
-         'list[current_name;src;6.5,.5;1,1;]'..
-         'list[current_name;dst;6.5,1.5;1,1;]'..
-         'list[current_player;main;0,3;8,4;]')
+      meta:set_string('formspec', press_idle_formspec)
    end,
    on_receive_fields = function(pos, formname, fields, sender)
       if fields ['press'] then
@@ -82,6 +95,7 @@ minetest.register_node('drinks:juice_press', {
                   meta:set_string('container', 'jcu_')
                   meta:set_string('fruitnumber', 4)
                   meta:set_string('infotext', 'Juicing...')
+                  meta:set_string('formspec', press_running_formspec)
                   timer:start(4)
                else
                   meta:set_string('infotext', 'You need more fruit.')
@@ -92,6 +106,7 @@ minetest.register_node('drinks:juice_press', {
                   meta:set_string('container', 'jbo_')
                   meta:set_string('fruitnumber', 8)
                   meta:set_string('infotext', 'Juicing...')
+                  meta:set_string('formspec', press_running_formspec)
                   timer:start(8)
                else
                   meta:set_string('infotext', 'You need more fruit.')
@@ -102,6 +117,7 @@ minetest.register_node('drinks:juice_press', {
                   meta:set_string('container', 'jbu_')
                   meta:set_string('fruitnumber', 16)
                   meta:set_string('infotext', 'Juicing...')
+                  meta:set_string('formspec', press_running_formspec)
                   timer:start(16)
                else
                   meta:set_string('infotext', 'You need more fruit.')
@@ -139,7 +155,7 @@ minetest.register_node('drinks:juice_press', {
       local outstack = inv:get_stack("dst", 1)
       local fruit = meta:get_string('fruit')
       local fruitnumber = tonumber(meta:get_string('fruitnumber'))
-      if container == 'tube' then --Still needs to take fruit from juice press.
+      if container == 'tube' then
          local timer = minetest.get_node_timer(pos)
          local under_node = {x=pos.x, y=pos.y-1, z=pos.z}
          local under_node_name = minetest.get_node_or_nil(under_node)
@@ -164,6 +180,7 @@ minetest.register_node('drinks:juice_press', {
       end
       else
       meta:set_string('infotext', 'Collect your juice.')
+      meta:set_string('formspec', press_idle_formspec)
       instack:take_item(tonumber(fruitnumber))
       inv:set_stack('src', 1, instack)
       inv:set_stack('dst', 1 ,'drinks:'..container..fruit)
@@ -175,6 +192,7 @@ minetest.register_node('drinks:juice_press', {
       local inv = meta:get_inventory()
       timer:stop()
       meta:set_string('infotext', 'Ready for more juicing.')
+      meta:set_string('formspec', press_idle_formspec)
    end,
    on_metadata_inventory_put = function(pos, listname, index, stack, player)
       local meta = minetest.env:get_meta(pos)

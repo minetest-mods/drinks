@@ -433,7 +433,7 @@ minetest.register_node('drinks:liquid_silo', {
       if fruit_in == 'empty' then
          meta:set_string('fruit', fruit)
          local vessel = string.sub(inputstack, 8, 10)
-         drinks.drinks_barrel(pos, inputstack)
+         drinks.drinks_silo(pos, inputstack)
       end
       if fruit == fruit_in then
          local vessel = string.sub(inputstack, 8, 10)

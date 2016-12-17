@@ -58,6 +58,25 @@ if minetest.get_modpath('crops') then
    table.insert(drinks.drink_table, {'tomato', 'Tomato', '#d03a0e'})
 end
 
+if minetest.get_modpath('farming') then
+   drinks.juiceable['melon'] = true
+   drinks.juiceable['tomato'] = true
+   drinks.juiceable['carrot'] = true
+   drinks.juiceable['cucumber'] = true
+   drinks.juiceable['grapes'] = true
+   drinks.juiceable['pumpkin'] = true
+   drinks.juiceable['raspberries'] = true
+   drinks.juiceable['rhubarb'] = true
+   table.insert(drinks.drink_table, {'melon', 'Melon', '#ef4646'})
+   table.insert(drinks.drink_table, {'tomato', 'Tomato', '#990000'})
+   table.insert(drinks.drink_table, {'carrot', 'Carrot', '#ed9121'})
+   table.insert(drinks.drink_table, {'cucumber', 'Cucumber', '#73af59'})
+   table.insert(drinks.drink_table, {'grapes', 'Grape', '#b20056'})
+   table.insert(drinks.drink_table, {'pumkin', 'Pumpkin', '#ffc04c'})
+   table.insert(drinks.drink_table, {'raspberries', 'Raspberry', '#C70039'})
+   table.insert(drinks.drink_table, {'rhubarb', 'Rhubarb', '#fb8461'})
+end
+
 if minetest.get_modpath('thirsty') then
    dofile(minetest.get_modpath('drinks')..'/drinks.lua')
 else

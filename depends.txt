@@ -7,3 +7,4 @@ plantlife?
 farming_plus?
 crops?
 farming?
+minetest_doc_modpack?

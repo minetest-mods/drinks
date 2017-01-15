@@ -50,6 +50,8 @@ local press_running_formspec =
 
 minetest.register_node('drinks:juice_press', {
    description = 'Juice Press',
+   _doc_items_longdesc = "A machine for creating drinks out of various fruits and vegetables.",
+   _doc_items_usagehelp = "Right-click the press to access inventory and begin juicing.",
    drawtype = 'mesh',
    mesh = 'drinks_press.obj',
    tiles = {name='drinks_press.png'},
@@ -291,6 +293,8 @@ end
 
 minetest.register_node('drinks:liquid_barrel', {
    description = 'Barrel of Liquid',
+   _doc_items_longdesc = "A node that provides a simple way to store juice.",
+   _doc_items_usagehelp = "Add or remove liquids from the barrel using buckets, bottles, or cups.",
    drawtype = 'mesh',
    mesh = 'drinks_liquid_barrel.obj',
    tiles = {name='drinks_barrel.png'},
@@ -386,6 +390,8 @@ minetest.register_node('drinks:liquid_barrel', {
 
 minetest.register_node('drinks:liquid_silo', {
    description = 'Silo of Liquid',
+   _doc_items_longdesc = "A node that provides a simple way to store juice.",
+   _doc_items_usagehelp = "Add or remove liquids from the silo using buckets, bottles, or cups.",
    drawtype = 'mesh',
    mesh = 'drinks_silo.obj',
    tiles = {name='drinks_silo.png'},

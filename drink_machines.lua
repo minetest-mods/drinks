@@ -404,7 +404,7 @@ minetest.register_node('drinks:liquid_silo', {
       },
    collision_box = {
       type = 'fixed',
-      fixed = {-.5, -.5, -.5, .5, .5, .5},
+      fixed = {-.5, -.5, -.5, .5, 1.5, .5},
       },
    on_construct = function(pos)
       local meta = minetest.env:get_meta(pos)

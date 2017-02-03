@@ -32,8 +32,8 @@ end
 
 if minetest.get_modpath('farming_plus') then
    drinks.juiceable['banana'] = true
-   drinks.juiceable['lemon_item'] = true
    drinks.juiceable['melon'] = true
+   drinks.juiceable['lemon_item'] = true
    drinks.juiceable['orange_item'] = true
    drinks.juiceable['peach_item'] = true
    drinks.juiceable['rhubarb_item'] = true
@@ -59,7 +59,8 @@ if minetest.get_modpath('crops') then
 end
 
 if minetest.get_modpath('farming') then
-   drinks.juiceable['melon'] = true
+   drinks.juiceable['melon_8'] = true
+   drinks.juiceable['melon_slice'] = true
    drinks.juiceable['tomato'] = true
    drinks.juiceable['carrot'] = true
    drinks.juiceable['cucumber'] = true

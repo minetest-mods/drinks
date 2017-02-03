@@ -32,6 +32,9 @@ local press_idle_formspec =
    'label[1.5,0;Organic juice is just a squish away.]' ..
    'label[4.3,.75;Put fruit here ->]'..
    'label[3.5,1.75;Put container here ->]'..
+   'label[0.2,1.8;4 fruits to a glass,]'..
+   'label[0.2,2.1;8 fruits to a bottle,]'..
+   'label[0.2,2.4;16 fruits to a bucket.]'..
    'button[1,1;2,1;press;Start Juicing]'..
    'list[current_name;src;6.5,.5;1,1;]'..
    'list[current_name;dst;6.5,1.5;1,1;]'..
@@ -42,11 +45,26 @@ local press_running_formspec =
    'label[1.5,0;Organic juice coming right up.]' ..
    'label[4.3,.75;Put fruit here ->]'..
    'label[3.5,1.75;Put container here ->]'..
+   'label[0.2,1.8;4 fruits to a glass,]'..
+   'label[0.2,2.1;8 fruits to a bottle,]'..
+   'label[0.2,2.4;16 fruits to a bucket.]'..
    'button[1,1;2,1;press;Start Juicing]'..
    'list[current_name;src;6.5,.5;1,1;]'..
    'list[current_name;dst;6.5,1.5;1,1;]'..
    'list[current_player;main;0,3;8,4;]'
 
+   local press_error_formspec =
+      'size[8,7]'..
+      'label[1.5,0;You need to add more fruit.]' ..
+      'label[4.3,.75;Put fruit here ->]'..
+      'label[3.5,1.75;Put container here ->]'..
+      'label[0.2,1.8;4 fruits to a glass,]'..
+      'label[0.2,2.1;8 fruits to a bottle,]'..
+      'label[0.2,2.4;16 fruits to a bucket.]'..
+      'button[1,1;2,1;press;Start Juicing]'..
+      'list[current_name;src;6.5,.5;1,1;]'..
+      'list[current_name;dst;6.5,1.5;1,1;]'..
+      'list[current_player;main;0,3;8,4;]'
 
 minetest.register_node('drinks:juice_press', {
    description = 'Juice Press',
@@ -67,7 +85,7 @@ minetest.register_node('drinks:juice_press', {
       fixed = {-.5, -.5, -.5, .5, .5, .5},
       },
    on_construct = function(pos)
-      local meta = minetest.env:get_meta(pos)
+      local meta = minetest.get_meta(pos)
       local inv = meta:get_inventory()
       inv:set_size('main', 8*4)
       inv:set_size('src', 1)
@@ -77,7 +95,7 @@ minetest.register_node('drinks:juice_press', {
    end,
    on_receive_fields = function(pos, formname, fields, sender)
       if fields ['press'] then
-         local meta = minetest.env:get_meta(pos)
+         local meta = minetest.get_meta(pos)
          local inv = meta:get_inventory()
          local timer = minetest.get_node_timer(pos)
          local instack = inv:get_stack("src", 1)
@@ -101,6 +119,7 @@ minetest.register_node('drinks:juice_press', {
                   timer:start(4)
                else
                   meta:set_string('infotext', 'You need more fruit.')
+                  meta:set_string('formspec', press_error_formspec)
                end
             end
             if vessel == 'vessels:glass_bottle' then
@@ -112,6 +131,7 @@ minetest.register_node('drinks:juice_press', {
                   timer:start(8)
                else
                   meta:set_string('infotext', 'You need more fruit.')
+                  meta:set_string('formspec', press_error_formspec)
                end
             end
             if vessel == 'bucket:bucket_empty' then
@@ -123,6 +143,7 @@ minetest.register_node('drinks:juice_press', {
                   timer:start(16)
                else
                   meta:set_string('infotext', 'You need more fruit.')
+                  meta:set_string('formspec', press_error_formspec)
                end
             end
             if vessel == 'default:papyrus' then
@@ -130,7 +151,7 @@ minetest.register_node('drinks:juice_press', {
                   local under_node = {x=pos.x, y=pos.y-1, z=pos.z}
                   local under_node_name = minetest.get_node_or_nil(under_node)
                   if under_node_name.name == 'drinks:liquid_barrel' then
-                     local meta_u = minetest.env:get_meta(under_node)
+                     local meta_u = minetest.get_meta(under_node)
                      local barrel_fruit = meta_u:get_string('fruit')
                      if fruit == barrel_fruit or barrel_fruit == 'empty' then
                         meta:set_string('container', 'tube')
@@ -143,6 +164,7 @@ minetest.register_node('drinks:juice_press', {
                      end
                   else
                      meta:set_string('infotext', 'You need more fruit.')
+                     meta:set_string('formspec', press_error_formspec)
                   end
                end
             end
@@ -150,7 +172,7 @@ minetest.register_node('drinks:juice_press', {
       end
    end,
    on_timer = function(pos)
-      local meta = minetest.env:get_meta(pos)
+      local meta = minetest.get_meta(pos)
       local inv = meta:get_inventory()
       local container = meta:get_string('container')
       local instack = inv:get_stack("src", 1)
@@ -161,7 +183,7 @@ minetest.register_node('drinks:juice_press', {
          local timer = minetest.get_node_timer(pos)
          local under_node = {x=pos.x, y=pos.y-1, z=pos.z}
          local under_node_name = minetest.get_node_or_nil(under_node)
-         local meta_u = minetest.env:get_meta(under_node)
+         local meta_u = minetest.get_meta(under_node)
          local fullness = tonumber(meta_u:get_string('fullness'))
          instack:take_item(tonumber(fruitnumber))
          inv:set_stack('src', 1, instack)
@@ -190,14 +212,14 @@ minetest.register_node('drinks:juice_press', {
    end,
    on_metadata_inventory_take = function(pos, listname, index, stack, player)
       local timer = minetest.get_node_timer(pos)
-      local meta = minetest.env:get_meta(pos)
+      local meta = minetest.get_meta(pos)
       local inv = meta:get_inventory()
       timer:stop()
       meta:set_string('infotext', 'Ready for more juicing.')
       meta:set_string('formspec', press_idle_formspec)
    end,
    on_metadata_inventory_put = function(pos, listname, index, stack, player)
-      local meta = minetest.env:get_meta(pos)
+      local meta = minetest.get_meta(pos)
       local inv = meta:get_inventory()
       meta:set_string('infotext', 'Ready for juicing.')
    end,
@@ -211,10 +233,27 @@ minetest.register_node('drinks:juice_press', {
          return false
       end
    end,
+   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+		if listname == 'dst' then
+			if stack:get_name() == ('bucket:bucket_empty') then
+				return 1
+			elseif stack:get_name() == ('vessels:drinking_glass') then
+				return 1
+			elseif stack:get_name() == ('vessels:glass_bottle') then
+				return 1
+         elseif stack:get_name() == ('default:papyrus') then
+            return 1
+			else
+				return 0
+			end
+      else
+         return 99
+		end
+	end,
 })
 
 function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
-   local meta = minetest.env:get_meta(pos)
+   local meta = minetest.get_meta(pos)
    local fullness = tonumber(meta:get_string('fullness'))
    if fullness - liq_vol < 0 then
       return
@@ -243,7 +282,7 @@ function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
 end
 
 function drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos)
-   local meta = minetest.env:get_meta(pos)
+   local meta = minetest.get_meta(pos)
    local fullness = tonumber(meta:get_string('fullness'))
    if fullness + liq_vol > ves_vol then
       return
@@ -264,7 +303,7 @@ function drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos)
 end
 
 function drinks.drinks_barrel(pos, inputstack)
-   local meta = minetest.env:get_meta(pos)
+   local meta = minetest.get_meta(pos)
    local vessel = string.sub(inputstack, 8, 10)
    if vessel == 'jcu' then
       drinks.drinks_liquid_add(2, 'vessels:drinking_glass', 128, pos)
@@ -278,7 +317,7 @@ function drinks.drinks_barrel(pos, inputstack)
 end
 
 function drinks.drinks_silo(pos, inputstack)
-   local meta = minetest.env:get_meta(pos)
+   local meta = minetest.get_meta(pos)
    local vessel = string.sub(inputstack, 8, 10)
    if vessel == 'jcu' then
       drinks.drinks_liquid_add(2, 'vessels:drinking_glass', 256, pos)
@@ -310,7 +349,7 @@ minetest.register_node('drinks:liquid_barrel', {
       fixed = {-.5, -.5, -.5, .5, .5, .5},
       },
    on_construct = function(pos)
-      local meta = minetest.env:get_meta(pos)
+      local meta = minetest.get_meta(pos)
       local inv = meta:get_inventory()
       inv:set_size('main', 8*4)
       inv:set_size('src', 1)
@@ -331,7 +370,7 @@ minetest.register_node('drinks:liquid_barrel', {
       'list[current_player;main;0,4;8,5;]')
    end,
    on_metadata_inventory_put = function(pos, listname, index, stack, player)
-      local meta = minetest.env:get_meta(pos)
+      local meta = minetest.get_meta(pos)
       local inv = meta:get_inventory()
       local instack = inv:get_stack("src", 1)
       local outstack = inv:get_stack('dst', 1)
@@ -366,7 +405,7 @@ minetest.register_node('drinks:liquid_barrel', {
    end,
    on_receive_fields = function(pos, formname, fields, sender)
       if fields['purge'] then
-         local meta = minetest.env:get_meta(pos)
+         local meta = minetest.get_meta(pos)
          local fullness = 0
          local fruit = 'no'
          meta:set_string('fullness', 0)
@@ -385,6 +424,9 @@ minetest.register_node('drinks:liquid_barrel', {
       else
          return false
       end
+   end,
+   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+      return 1
    end,
 })
 
@@ -407,7 +449,7 @@ minetest.register_node('drinks:liquid_silo', {
       fixed = {-.5, -.5, -.5, .5, 1.5, .5},
       },
    on_construct = function(pos)
-      local meta = minetest.env:get_meta(pos)
+      local meta = minetest.get_meta(pos)
       local inv = meta:get_inventory()
       inv:set_size('main', 8*4)
       inv:set_size('src', 1)
@@ -428,7 +470,7 @@ minetest.register_node('drinks:liquid_silo', {
       'list[current_player;main;0,4;8,5;]')
    end,
    on_metadata_inventory_put = function(pos, listname, index, stack, player)
-      local meta = minetest.env:get_meta(pos)
+      local meta = minetest.get_meta(pos)
       local inv = meta:get_inventory()
       local instack = inv:get_stack("src", 1)
       local outstack = inv:get_stack('dst', 1)
@@ -463,7 +505,7 @@ minetest.register_node('drinks:liquid_silo', {
    end,
    on_receive_fields = function(pos, formname, fields, sender)
       if fields['purge'] then
-         local meta = minetest.env:get_meta(pos)
+         local meta = minetest.get_meta(pos)
          local fullness = 0
          local fruit = 'no'
          meta:set_string('fullness', 0)
@@ -482,5 +524,8 @@ minetest.register_node('drinks:liquid_silo', {
       else
          return false
       end
+   end,
+   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+      return 1
    end,
 })

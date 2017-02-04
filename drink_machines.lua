@@ -374,9 +374,9 @@ minetest.register_node('drinks:liquid_barrel', {
       local inv = meta:get_inventory()
       local instack = inv:get_stack("src", 1)
       local outstack = inv:get_stack('dst', 1)
-      local inputstack = instack:get_name()
       local outputstack = outstack:get_name()
-      local fruit = string.sub(inputstack, 12, -1)
+      local fruit_name = minetest.registered_craftitems[instack:get_name()]
+      local fruit = fruit_name.juice_type
       local fruit_in = meta:get_string('fruit')
       if fruit_in == 'empty' then
          meta:set_string('fruit', fruit)
@@ -474,9 +474,9 @@ minetest.register_node('drinks:liquid_silo', {
       local inv = meta:get_inventory()
       local instack = inv:get_stack("src", 1)
       local outstack = inv:get_stack('dst', 1)
-      local inputstack = instack:get_name()
       local outputstack = outstack:get_name()
-      local fruit = string.sub(inputstack, 12, -1)
+      local fruit_name = minetest.registered_craftitems[instack:get_name()]
+      local fruit = fruit_name.juice_type
       local fruit_in = meta:get_string('fruit')
       if fruit_in == 'empty' then
          meta:set_string('fruit', fruit)

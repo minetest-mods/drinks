@@ -11,6 +11,7 @@ for i in ipairs (drinks.drink_table) do
 minetest.register_craftitem('drinks:jcu_'..desc, {
    description = 'Cup of '..craft..' Juice',
    groups = {drink=1},
+   juice_type = craft,
    inventory_image = 'drinks_glass_contents.png^[colorize:'..color..':200^drinks_drinking_glass.png',
    on_use = function(itemstack, user, pointed_thing)
       local eat_func = minetest.item_eat(health, 'vessels:drinking_glass')
@@ -21,6 +22,7 @@ minetest.register_craftitem('drinks:jcu_'..desc, {
 minetest.register_craftitem('drinks:jbo_'..desc, {
    description = 'Bottle of '..craft..' Juice',
    groups = {drink=1},
+   juice_type = craft,
    inventory_image = 'drinks_bottle_contents.png^[colorize:'..color..':200^drinks_glass_bottle.png',
    on_use = function(itemstack, user, pointed_thing)
       local eat_func = minetest.item_eat((health*2), 'vessels:glass_bottle')
@@ -30,6 +32,7 @@ minetest.register_craftitem('drinks:jbo_'..desc, {
 
 minetest.register_craftitem('drinks:jbu_'..desc, {
    description = 'Bucket of '..craft..' Juice',
+   juice_type = craft,
    inventory_image = 'bucket.png^(drinks_bucket_contents.png^[colorize:'..color..':200)',
    stack_max = 1,
 })

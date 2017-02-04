@@ -1,10 +1,10 @@
-function drinks.liquid_storage_formspec(fruit, fullness, max)
+function drinks.liquid_storage_formspec(fruit_name, fullness, max)
 	local formspec =
    'size[8,8]'..
       'label[0,0;Fill with the drink of your choice,]'..
       'label[0,.4;you can only add more of the same type of drink.]'..
       'label[4.5,1.2;Add liquid ->]'..
-      'label[.5,1.2;Storing '..fruit..' juice.]'..
+      'label[.5,1.2;Storing '..fruit_name..' juice.]'..
       'label[.5,1.65;Holding '..(fullness/2)..' of '..(max/2)..' cups.]'..
       'label[4.5,2.25;Take liquid ->]'..
       'label[2,3.2;(This empties the container completely)]'..

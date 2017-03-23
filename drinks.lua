@@ -8,7 +8,7 @@ for i in ipairs (drinks.drink_table) do
    -- The color of the drink is all done in code, so we don't need to have multiple images.
 
 --Actual Node registration
-minetest.register_craftitem('drinks:jcu_'..desc, {
+drinks.register_item('drinks:jcu_'..desc,  'vessels:drinking_glass', {
    description = 'Cup of '..craft..' Juice',
    groups = {drink=1},
    juice_type = craft,
@@ -20,14 +20,25 @@ minetest.register_craftitem('drinks:jcu_'..desc, {
    end,
 })
 
-minetest.register_craftitem('drinks:jbo_'..desc, {
+drinks.register_item('drinks:jbo_'..desc, 'vessels:glass_bottle',{
    description = 'Bottle of '..craft..' Juice',
-   groups = {drink=1},
+   groups = {drink = 1},
    juice_type = craft,
    inventory_image = 'drinks_bottle_contents.png^[colorize:'..color..':200^drinks_glass_bottle.png',
    on_use = function(itemstack, user, pointed_thing)
       thirsty.drink(user, 8, 20)
       local eat_func = minetest.item_eat((health*2), 'vessels:glass_bottle')
+      return eat_func(itemstack, user, pointed_thing)
+   end,
+})
+
+drinks.register_item('drinks:jsb_'..desc, 'vessels:steel_bottle',{
+   description = 'Heavy Steel Bottle ('..craft..' Juice)',
+   groups = {drink = 1},
+   inventory_image = 'vessels_steel_bottle.png',
+   on_use = function(itemstack, user, pointed_thing)
+      thirsty.drink(user, 8, 20)
+      local eat_func = minetest.item_eat((health*2), 'vessels:steel_bottle')
       return eat_func(itemstack, user, pointed_thing)
    end,
 })

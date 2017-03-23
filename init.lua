@@ -78,6 +78,35 @@ if minetest.get_modpath('farming') then
    table.insert(drinks.drink_table, {'rhubarb', 'Rhubarb', '#fb8461'})
 end
 
+-- replace craftitem to node definition
+-- use existing node as template (e.g. 'vessel:glass_bottle')
+drinks.register_item = function( name, template, def )
+   local template_def = minetest.registered_nodes[template]
+   if template_def then
+   local drinks_def = table.copy(template_def)
+
+   -- replace/add values
+   for k,v in pairs(def) do
+      if k == "groups" then
+         -- special handling for groups: merge instead replace
+         for g,n in pairs(v) do
+            drinks_def[k][g] = n
+         end
+      else
+         drinks_def[k]=v
+      end
+   end
+
+   if def.inventory_image then
+      drinks_def.wield_image = drinks_def.inventory_image
+      drinks_def.tiles = { drinks_def.inventory_image }
+   end
+
+   minetest.register_node( name, drinks_def )
+   end
+end
+
+
 if minetest.get_modpath('thirsty') then
    dofile(minetest.get_modpath('drinks')..'/drinks.lua')
 else

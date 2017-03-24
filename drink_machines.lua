@@ -134,6 +134,18 @@ minetest.register_node('drinks:juice_press', {
                   meta:set_string('formspec', press_error_formspec)
                end
             end
+            if vessel == 'vessels:steel_bottle' then
+               if instack:get_count() >= 8 then
+                  meta:set_string('container', 'jsb_')
+                  meta:set_string('fruitnumber', 8)
+                  meta:set_string('infotext', 'Juicing...')
+                  meta:set_string('formspec', press_running_formspec)
+                  timer:start(8)
+               else
+                  meta:set_string('infotext', 'You need more fruit.')
+                  meta:set_string('formspec', press_error_formspec)
+               end
+            end
             if vessel == 'bucket:bucket_empty' then
                if instack:get_count() >= 16 then
                   meta:set_string('container', 'jbu_')
@@ -234,22 +246,24 @@ minetest.register_node('drinks:juice_press', {
       end
    end,
    allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-		if listname == 'dst' then
-			if stack:get_name() == ('bucket:bucket_empty') then
-				return 1
-			elseif stack:get_name() == ('vessels:drinking_glass') then
-				return 1
-			elseif stack:get_name() == ('vessels:glass_bottle') then
-				return 1
+      if listname == 'dst' then
+         if stack:get_name() == ('bucket:bucket_empty') then
+            return 1
+         elseif stack:get_name() == ('vessels:drinking_glass') then
+            return 1
+         elseif stack:get_name() == ('vessels:glass_bottle') then
+            return 1
+         elseif stack:get_name() == ('vessels:steel_bottle') then
+            return 1
          elseif stack:get_name() == ('default:papyrus') then
             return 1
-			else
-				return 0
-			end
+         else
+            return 0
+         end
       else
          return 99
-		end
-	end,
+      end
+   end,
 })
 
 function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
@@ -270,7 +284,7 @@ function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
    if ves_vol == 256 then
       meta:set_string('formspec', drinks.liquid_storage_formspec(fruit_name, fullness, 256))
    end
-   if ves_typ == 'jcu' or ves_typ == 'jbo' or ves_typ == 'jbu' then
+   if ves_typ == 'jcu' or ves_typ == 'jbo' or ves_typ == 'jsb' or ves_typ == 'jbu' then
       inv:set_stack('dst', 1, 'drinks:'..ves_typ..'_'..fruit)
    end
    if ves_typ == 'thirsty:bronze_canteen' then
@@ -313,6 +327,9 @@ function drinks.drinks_barrel(pos, inputstack)
    if vessel == 'jbo' then
       drinks.drinks_liquid_add(4, 'vessels:glass_bottle', 128, pos)
    end
+   if vessel == 'jsb' then
+      drinks.drinks_liquid_add(4, 'vessels:steel_bottle', 128, pos)
+   end
    if vessel == 'jbu' then
       drinks.drinks_liquid_add(16, 'bucket:bucket_empty', 128, pos)
    end
@@ -326,6 +343,9 @@ function drinks.drinks_silo(pos, inputstack)
    end
    if vessel == 'jbo' then
       drinks.drinks_liquid_add(4, 'vessels:glass_bottle', 256, pos)
+   end
+   if vessel == 'jsb' then
+      drinks.drinks_liquid_add(4, 'vessels:steel_bottle', 256, pos)
    end
    if vessel == 'jbu' then
       drinks.drinks_liquid_add(16, 'bucket:bucket_empty', 256, pos)
@@ -396,6 +416,9 @@ minetest.register_node('drinks:liquid_barrel', {
       end
       if outputstack == 'vessels:glass_bottle' then
          drinks.drinks_liquid_sub(4, 'jbo', 128, pos)
+      end
+      if outputstack == 'vessels:steel_bottle' then
+         drinks.drinks_liquid_sub(4, 'jsb', 128, pos)
       end
       if outputstack == 'bucket:bucket_empty' then
          drinks.drinks_liquid_sub(16, 'jbu', 128, pos)
@@ -498,6 +521,9 @@ minetest.register_node('drinks:liquid_silo', {
       end
       if outputstack == 'vessels:glass_bottle' then
          drinks.drinks_liquid_sub(4, 'jbo', 256, pos)
+      end
+      if outputstack == 'vessels:steel_bottle' then
+         drinks.drinks_liquid_sub(4, 'jsb', 256, pos)
       end
       if outputstack == 'bucket:bucket_empty' then
          drinks.drinks_liquid_sub(16, 'jbu', 256, pos)

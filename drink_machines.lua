@@ -121,8 +121,7 @@ minetest.register_node('drinks:juice_press', {
                   meta:set_string('infotext', 'You need more fruit.')
                   meta:set_string('formspec', press_error_formspec)
                end
-            end
-            if vessel == 'vessels:glass_bottle' then
+            elseif vessel == 'vessels:glass_bottle' then
                if instack:get_count() >= 8 then
                   meta:set_string('container', 'jbo_')
                   meta:set_string('fruitnumber', 8)
@@ -133,8 +132,7 @@ minetest.register_node('drinks:juice_press', {
                   meta:set_string('infotext', 'You need more fruit.')
                   meta:set_string('formspec', press_error_formspec)
                end
-            end
-            if vessel == 'vessels:steel_bottle' then
+            elseif vessel == 'vessels:steel_bottle' then
                if instack:get_count() >= 8 then
                   meta:set_string('container', 'jsb_')
                   meta:set_string('fruitnumber', 8)
@@ -145,8 +143,7 @@ minetest.register_node('drinks:juice_press', {
                   meta:set_string('infotext', 'You need more fruit.')
                   meta:set_string('formspec', press_error_formspec)
                end
-            end
-            if vessel == 'bucket:bucket_empty' then
+            elseif vessel == 'bucket:bucket_empty' then
                if instack:get_count() >= 16 then
                   meta:set_string('container', 'jbu_')
                   meta:set_string('fruitnumber', 16)
@@ -157,8 +154,7 @@ minetest.register_node('drinks:juice_press', {
                   meta:set_string('infotext', 'You need more fruit.')
                   meta:set_string('formspec', press_error_formspec)
                end
-            end
-            if vessel == 'default:papyrus' then
+            elseif vessel == 'default:papyrus' then
                if instack:get_count() >= 2 then
                   local under_node = {x=pos.x, y=pos.y-1, z=pos.z}
                   local under_node_name = minetest.get_node_or_nil(under_node)
@@ -280,17 +276,14 @@ function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
    meta:set_string('infotext', (math.floor((fullness/ves_vol)*100))..' % full of '..fruit_name..' juice.')
    if ves_vol == 128 then
       meta:set_string('formspec', drinks.liquid_storage_formspec(fruit_name, fullness, 128))
-   end
-   if ves_vol == 256 then
+   elseif ves_vol == 256 then
       meta:set_string('formspec', drinks.liquid_storage_formspec(fruit_name, fullness, 256))
    end
    if ves_typ == 'jcu' or ves_typ == 'jbo' or ves_typ == 'jsb' or ves_typ == 'jbu' then
       inv:set_stack('dst', 1, 'drinks:'..ves_typ..'_'..fruit)
-   end
-   if ves_typ == 'thirsty:bronze_canteen' then
+   elseif ves_typ == 'thirsty:bronze_canteen' then
       inv:set_stack('dst', 1, {name="thirsty:bronze_canteen", count=1, wear=60, metadata=""})
-   end
-   if ves_typ == 'thirsty:steel_canteen' then
+   elseif ves_typ == 'thirsty:steel_canteen' then
       inv:set_stack('dst', 1, {name="thirsty:steel_canteen", count=1, wear=40, metadata=""})
    end
    end
@@ -311,8 +304,7 @@ function drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos)
    meta:set_string('infotext', (math.floor((fullness/ves_vol)*100))..' % full of '..fruit_name..' juice.')
    if ves_vol == 256 then
       meta:set_string('formspec', drinks.liquid_storage_formspec(fruit_name, fullness, 256))
-   end
-   if ves_vol == 128 then
+   elseif ves_vol == 128 then
       meta:set_string('formspec', drinks.liquid_storage_formspec(fruit_name, fullness, 128))
    end
    end
@@ -323,14 +315,11 @@ function drinks.drinks_barrel(pos, inputstack)
    local vessel = string.sub(inputstack, 8, 10)
    if vessel == 'jcu' then
       drinks.drinks_liquid_add(2, 'vessels:drinking_glass', 128, pos)
-   end
-   if vessel == 'jbo' then
+   elseif vessel == 'jbo' then
       drinks.drinks_liquid_add(4, 'vessels:glass_bottle', 128, pos)
-   end
-   if vessel == 'jsb' then
+   elseif vessel == 'jsb' then
       drinks.drinks_liquid_add(4, 'vessels:steel_bottle', 128, pos)
-   end
-   if vessel == 'jbu' then
+   elseif vessel == 'jbu' then
       drinks.drinks_liquid_add(16, 'bucket:bucket_empty', 128, pos)
    end
 end
@@ -340,14 +329,11 @@ function drinks.drinks_silo(pos, inputstack)
    local vessel = string.sub(inputstack, 8, 10)
    if vessel == 'jcu' then
       drinks.drinks_liquid_add(2, 'vessels:drinking_glass', 256, pos)
-   end
-   if vessel == 'jbo' then
+   elseif vessel == 'jbo' then
       drinks.drinks_liquid_add(4, 'vessels:glass_bottle', 256, pos)
-   end
-   if vessel == 'jsb' then
+   elseif vessel == 'jsb' then
       drinks.drinks_liquid_add(4, 'vessels:steel_bottle', 256, pos)
-   end
-   if vessel == 'jbu' then
+   elseif vessel == 'jbu' then
       drinks.drinks_liquid_add(16, 'bucket:bucket_empty', 256, pos)
    end
 end
@@ -413,20 +399,15 @@ minetest.register_node('drinks:liquid_barrel', {
       end
       if outputstack == 'vessels:drinking_glass' then
          drinks.drinks_liquid_sub(2, 'jcu', 128, pos)
-      end
-      if outputstack == 'vessels:glass_bottle' then
+      elseif outputstack == 'vessels:glass_bottle' then
          drinks.drinks_liquid_sub(4, 'jbo', 128, pos)
-      end
-      if outputstack == 'vessels:steel_bottle' then
+      elseif outputstack == 'vessels:steel_bottle' then
          drinks.drinks_liquid_sub(4, 'jsb', 128, pos)
-      end
-      if outputstack == 'bucket:bucket_empty' then
+      elseif outputstack == 'bucket:bucket_empty' then
          drinks.drinks_liquid_sub(16, 'jbu', 128, pos)
-      end
-      if outputstack == 'thirsty:steel_canteen' then
+      elseif outputstack == 'thirsty:steel_canteen' then
          drinks.drinks_liquid_sub(20, 'thirsty:steel_canteen', 128, pos)
-      end
-      if outputstack == 'thirsty:bronze_canteen' then
+      elseif outputstack == 'thirsty:bronze_canteen' then
          drinks.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 128, pos)
       end
    end,
@@ -518,20 +499,15 @@ minetest.register_node('drinks:liquid_silo', {
       end
       if outputstack == 'vessels:drinking_glass' then
          drinks.drinks_liquid_sub(2, 'jcu', 256, pos)
-      end
-      if outputstack == 'vessels:glass_bottle' then
+      elseif outputstack == 'vessels:glass_bottle' then
          drinks.drinks_liquid_sub(4, 'jbo', 256, pos)
-      end
-      if outputstack == 'vessels:steel_bottle' then
+      elseif outputstack == 'vessels:steel_bottle' then
          drinks.drinks_liquid_sub(4, 'jsb', 256, pos)
-      end
-      if outputstack == 'bucket:bucket_empty' then
+      elseif outputstack == 'bucket:bucket_empty' then
          drinks.drinks_liquid_sub(16, 'jbu', 256, pos)
-      end
-      if outputstack == 'thirsty:steel_canteen' then
+      elseif outputstack == 'thirsty:steel_canteen' then
          drinks.drinks_liquid_sub(20, 'thirsty:steel_canteen', 256, pos)
-      end
-      if outputstack == 'thirsty:bronze_canteen' then
+      elseif outputstack == 'thirsty:bronze_canteen' then
          drinks.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 256, pos)
       end
    end,

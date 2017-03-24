@@ -35,7 +35,7 @@ drinks.register_item( 'drinks:jsb_'..desc, 'vessels:steel_bottle', {
    juice_type = craft,
    inventory_image = 'vessels_steel_bottle.png',
    on_use = function(itemstack, user, pointed_thing)
-      local eat_func = minetest.item_eat((health*2), 'vessels:glass_bottle')
+      local eat_func = minetest.item_eat((health*2), 'vessels:steel_bottle')
       return eat_func(itemstack, user, pointed_thing)
    end,
 })

@@ -1,6 +1,12 @@
 drinks = {
 drink_table = {},
 juiceable = {},
+volume = {
+   ['jcu'] = {size = 2, name = 'vessels:drinking_glass'},
+   ['jbo'] = {size = 4, name = 'vessels:glass_bottle'},
+   ['jsb'] = {size = 4, name = 'vessels:steel_bottle'},
+   ['jbu'] = {size = 16, name = 'bucket:bucket_empty'}
+},
 }
 
 

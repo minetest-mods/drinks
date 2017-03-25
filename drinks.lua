@@ -35,6 +35,7 @@ drinks.register_item('drinks:jbo_'..desc, 'vessels:glass_bottle',{
 drinks.register_item('drinks:jsb_'..desc, 'vessels:steel_bottle',{
    description = 'Heavy Steel Bottle ('..craft..' Juice)',
    groups = {drink = 1},
+   juice_type = craft,
    inventory_image = 'vessels_steel_bottle.png',
    on_use = function(itemstack, user, pointed_thing)
       thirsty.drink(user, 8, 20)

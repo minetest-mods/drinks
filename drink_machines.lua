@@ -310,32 +310,18 @@ function drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos)
    end
 end
 
+
+
 function drinks.drinks_barrel(pos, inputstack)
    local meta = minetest.get_meta(pos)
    local vessel = string.sub(inputstack, 8, 10)
-   if vessel == 'jcu' then
-      drinks.drinks_liquid_add(2, 'vessels:drinking_glass', 128, pos)
-   elseif vessel == 'jbo' then
-      drinks.drinks_liquid_add(4, 'vessels:glass_bottle', 128, pos)
-   elseif vessel == 'jsb' then
-      drinks.drinks_liquid_add(4, 'vessels:steel_bottle', 128, pos)
-   elseif vessel == 'jbu' then
-      drinks.drinks_liquid_add(16, 'bucket:bucket_empty', 128, pos)
-   end
+   drinks.drinks_liquid_add(drinks.volume[vessel].size, drinks.volume[vessel].name, 128, pos)
 end
 
 function drinks.drinks_silo(pos, inputstack)
    local meta = minetest.get_meta(pos)
    local vessel = string.sub(inputstack, 8, 10)
-   if vessel == 'jcu' then
-      drinks.drinks_liquid_add(2, 'vessels:drinking_glass', 256, pos)
-   elseif vessel == 'jbo' then
-      drinks.drinks_liquid_add(4, 'vessels:glass_bottle', 256, pos)
-   elseif vessel == 'jsb' then
-      drinks.drinks_liquid_add(4, 'vessels:steel_bottle', 256, pos)
-   elseif vessel == 'jbu' then
-      drinks.drinks_liquid_add(16, 'bucket:bucket_empty', 256, pos)
-   end
+   drinks.drinks_liquid_add(drinks.volume[vessel].size, drinks.volume[vessel].name, 256, pos)
 end
 
 minetest.register_node('drinks:liquid_barrel', {
@@ -388,8 +374,8 @@ minetest.register_node('drinks:liquid_barrel', {
       local fruit_in = meta:get_string('fruit')
       if fruit_in == 'empty' then
          meta:set_string('fruit', fruit)
-         local fruit_name = minetest.registered_craftitems[instack:get_name()]
-         meta:set_string('fruit_name', string.lower(fruit_name.juice_type))
+         local fruit_name = minetest.registered_nodes[instack:get_name()]
+         meta:set_string('fruit_name', string.lower(fruit_type.juice_type))
          local vessel = string.sub(inputstack, 8, 10)
          drinks.drinks_barrel(pos, inputstack)
       end
@@ -488,8 +474,8 @@ minetest.register_node('drinks:liquid_silo', {
       local fruit_in = meta:get_string('fruit')
       if fruit_in == 'empty' then
          meta:set_string('fruit', fruit)
-         local fruit_name = minetest.registered_craftitems[instack:get_name()]
-         meta:set_string('fruit_name', string.lower(fruit_name.juice_type))
+         local fruit_name = minetest.registered_nodes[instack:get_name()]
+         meta:set_string('fruit_name', string.lower(fruit_type.juice_type))
          local vessel = string.sub(inputstack, 8, 10)
          drinks.drinks_silo(pos, inputstack)
       end

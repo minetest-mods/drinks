@@ -1,11 +1,19 @@
 drinks = {
 drink_table = {},
 juiceable = {},
-volume = {
+shortname = {
    ['jcu'] = {size = 2, name = 'vessels:drinking_glass'},
    ['jbo'] = {size = 4, name = 'vessels:glass_bottle'},
    ['jsb'] = {size = 4, name = 'vessels:steel_bottle'},
    ['jbu'] = {size = 16, name = 'bucket:bucket_empty'}
+},
+longname = {
+   ['vessels:drinking_glass'] = {size = 2, name = 'jcu'},
+   ['vessels:glass_bottle'] = {size = 4, name = 'jbo'},
+   ['vessels:steel_bottle'] = {size = 4, name = 'jsb'},
+   ['bucket:bucket_empty'] = {size = 16, name = 'jbu'},
+   ['thirsty:steel_canteen'] = {size = 20, name = 'thirsty:steel_canteen'},
+   ['thirsty:bronze_canteen'] = {size = 30, name = 'thirsty:bronze_canteen'},
 },
 }
 

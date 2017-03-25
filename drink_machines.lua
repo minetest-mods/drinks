@@ -315,13 +315,13 @@ end
 function drinks.drinks_barrel(pos, inputstack)
    local meta = minetest.get_meta(pos)
    local vessel = string.sub(inputstack, 8, 10)
-   drinks.drinks_liquid_add(drinks.volume[vessel].size, drinks.volume[vessel].name, 128, pos)
+   drinks.drinks_liquid_add(drinks.shortname[vessel].size, drinks.shortname[vessel].name, 128, pos)
 end
 
 function drinks.drinks_silo(pos, inputstack)
    local meta = minetest.get_meta(pos)
    local vessel = string.sub(inputstack, 8, 10)
-   drinks.drinks_liquid_add(drinks.volume[vessel].size, drinks.volume[vessel].name, 256, pos)
+   drinks.drinks_liquid_add(drinks.shortname[vessel].size, drinks.shortname[vessel].name, 256, pos)
 end
 
 minetest.register_node('drinks:liquid_barrel', {
@@ -375,7 +375,7 @@ minetest.register_node('drinks:liquid_barrel', {
       if fruit_in == 'empty' then
          meta:set_string('fruit', fruit)
          local fruit_name = minetest.registered_nodes[instack:get_name()]
-         meta:set_string('fruit_name', string.lower(fruit_type.juice_type))
+         meta:set_string('fruit_name', string.lower(fruit_name.juice_type))
          local vessel = string.sub(inputstack, 8, 10)
          drinks.drinks_barrel(pos, inputstack)
       end
@@ -383,18 +383,8 @@ minetest.register_node('drinks:liquid_barrel', {
          local vessel = string.sub(inputstack, 8, 10)
          drinks.drinks_barrel(pos, inputstack)
       end
-      if outputstack == 'vessels:drinking_glass' then
-         drinks.drinks_liquid_sub(2, 'jcu', 128, pos)
-      elseif outputstack == 'vessels:glass_bottle' then
-         drinks.drinks_liquid_sub(4, 'jbo', 128, pos)
-      elseif outputstack == 'vessels:steel_bottle' then
-         drinks.drinks_liquid_sub(4, 'jsb', 128, pos)
-      elseif outputstack == 'bucket:bucket_empty' then
-         drinks.drinks_liquid_sub(16, 'jbu', 128, pos)
-      elseif outputstack == 'thirsty:steel_canteen' then
-         drinks.drinks_liquid_sub(20, 'thirsty:steel_canteen', 128, pos)
-      elseif outputstack == 'thirsty:bronze_canteen' then
-         drinks.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 128, pos)
+      if drinks.longname[outputstack] then
+         drinks.drinks_liquid_sub(drinks.longname[outputstack].size, drinks.longname[outputstack].name, 128, pos)
       end
    end,
    on_receive_fields = function(pos, formname, fields, sender)
@@ -475,7 +465,7 @@ minetest.register_node('drinks:liquid_silo', {
       if fruit_in == 'empty' then
          meta:set_string('fruit', fruit)
          local fruit_name = minetest.registered_nodes[instack:get_name()]
-         meta:set_string('fruit_name', string.lower(fruit_type.juice_type))
+         meta:set_string('fruit_name', string.lower(fruit_name.juice_type))
          local vessel = string.sub(inputstack, 8, 10)
          drinks.drinks_silo(pos, inputstack)
       end
@@ -483,18 +473,8 @@ minetest.register_node('drinks:liquid_silo', {
          local vessel = string.sub(inputstack, 8, 10)
          drinks.drinks_silo(pos, inputstack)
       end
-      if outputstack == 'vessels:drinking_glass' then
-         drinks.drinks_liquid_sub(2, 'jcu', 256, pos)
-      elseif outputstack == 'vessels:glass_bottle' then
-         drinks.drinks_liquid_sub(4, 'jbo', 256, pos)
-      elseif outputstack == 'vessels:steel_bottle' then
-         drinks.drinks_liquid_sub(4, 'jsb', 256, pos)
-      elseif outputstack == 'bucket:bucket_empty' then
-         drinks.drinks_liquid_sub(16, 'jbu', 256, pos)
-      elseif outputstack == 'thirsty:steel_canteen' then
-         drinks.drinks_liquid_sub(20, 'thirsty:steel_canteen', 256, pos)
-      elseif outputstack == 'thirsty:bronze_canteen' then
-         drinks.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 256, pos)
+      if drinks.longname[outputstack] then
+         drinks.drinks_liquid_sub(drinks.longname[outputstack].size, drinks.longname[outputstack].name, 256, pos)
       end
    end,
    on_receive_fields = function(pos, formname, fields, sender)

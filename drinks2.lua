@@ -40,8 +40,9 @@ drinks.register_item( 'drinks:jsb_'..desc, 'vessels:steel_bottle', {
    end,
 })
 
-minetest.register_craftitem('drinks:jbu_'..desc, {
+drinks.register_item('drinks:jbu_'..desc, 'bucket:bucket_empty',{
    description = 'Bucket of '..craft..' Juice',
+   groups = {drink=1},
    juice_type = craft,
    inventory_image = 'bucket.png^(drinks_bucket_contents.png^[colorize:'..color..':200)',
    stack_max = 1,

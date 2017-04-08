@@ -8,6 +8,24 @@ for i in ipairs (drinks.drink_table) do
    -- The color of the drink is all done in code, so we don't need to have multiple images.
 
 --Actual Node registration
+minetest.register_node('drinks:jbu_'..desc..'', {
+	description = 'Bucket of '..craft..' Juice',
+	drawtype = "plantlike",
+	tiles = {'bucket.png^(drinks_bucket_contents.png^[colorize:'..color..':200)'},
+	inventory_image = 'bucket.png^(drinks_bucket_contents.png^[colorize:'..color..':200)',
+	wield_image = 'bucket.png^(drinks_bucket_contents.png^[colorize:'..color..':200)',
+	paramtype = "light",
+   juice_type = craft,
+	is_ground_content = false,
+	walkable = false,
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.25, -0.5, -0.25, 0.25, 0.4, 0.25}
+	},
+	groups = {vessel=1,dig_immediate=3,attached_node=1, drink = 1},
+	sounds = default.node_sound_defaults(),
+})
+
 drinks.register_item('drinks:jcu_'..desc,  'vessels:drinking_glass', {
    description = 'Cup of '..craft..' Juice',
    groups = {drink=1},
@@ -42,14 +60,6 @@ drinks.register_item('drinks:jsb_'..desc, 'vessels:steel_bottle',{
       local eat_func = minetest.item_eat((health*2), 'vessels:steel_bottle')
       return eat_func(itemstack, user, pointed_thing)
    end,
-})
-
-drinks.register_item('drinks:jbu_'..desc, 'vessels:steel_bottle', {
-   description = 'Bucket of '..craft..' Juice',
-   groups = {drink = 1},
-   juice_type = craft,
-   inventory_image = 'bucket.png^(drinks_bucket_contents.png^[colorize:'..color..':200)',
-   stack_max = 1,
 })
 
 end

@@ -1,6 +1,7 @@
 bucket
 default
 vessels
+stairs
 hunger?
 thirsty?
 plantlife?

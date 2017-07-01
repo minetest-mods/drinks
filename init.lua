@@ -1,3 +1,53 @@
+-- mod support (moreblocks/technic_worldgen)
+local slab_str = "stairs:slab_wood"
+
+function applyModSupport()
+   local moreblocks_found = false
+   local technic_worldgen = false
+
+   local modnames = minetest.get_modnames()
+
+   for i, name in ipairs(modnames) do
+      -- minetest.log("[Mod] " .. name)
+      if name == "moreblocks" then
+         moreblocks_found = true
+      end
+
+      if name == "technic_worldgen" then
+         technic_worldgen = true
+      end
+   end
+
+   if moreblocks_found == true and technic_worldgen == true then
+      minetest.log("applying patch to mod " .. minetest.get_current_modname())
+      minetest.log("converting '" .. slab_str .. "' to 'moreblocks:slab_wood'")
+      slab_str = "moreblocks:slab_wood"
+   end
+end
+--applyModSupport()
+
+--Craft Recipes
+
+-- added mod-support
+minetest.register_craft({
+      output = 'drinks:juice_press',
+      recipe = {
+         {'default:stick', 'default:steel_ingot', 'default:stick'},
+         {'default:stick', 'bucket:bucket_empty', 'default:stick'},
+         {slab_str, slab_str, 'vessels:drinking_glass'},
+         }
+})
+
+-- added mod-support
+minetest.register_craft({
+      output = 'drinks:liquid_barrel',
+      recipe = {
+         {'group:wood', 'group:wood', 'group:wood'},
+         {'group:wood', 'group:wood', 'group:wood'},
+         {slab_str, '', slab_str},
+         }
+})
+
 drinks = {
 drink_table = {},
 juiceable = {},

@@ -142,6 +142,17 @@ if minetest.get_modpath('farming') then
    table.insert(drinks.drink_table, {'rhubarb', 'Rhubarb', '#fb8461'})
 end
 
+if minetest.get_modpath('fruit') then
+   drinks.juiceable['pear'] = true
+   drinks.juiceable['plum'] = true
+   drinks.juiceable['peach'] = true
+   drinks.juiceable['orange'] = true
+   table.insert(drinks.drink_table, {'pear', 'Pear', '#ecff56'})
+   table.insert(drinks.drink_table, {'plum', 'Plum', '#8e4585'})
+   table.insert(drinks.drink_table, {'peach', 'Peach', '#f2bc1e'})
+   table.insert(drinks.drink_table, {'orange', 'Orange', '#ffc417'})
+end
+
 -- replace craftitem to node definition
 -- use existing node as template (e.g. 'vessel:glass_bottle')
 drinks.register_item = function( name, template, def )

@@ -118,8 +118,10 @@ end
 if minetest.get_modpath('crops') then
    drinks.juiceable['melon'] = true
    drinks.juiceable['tomato'] = true
+   drinks.juiceable['pumpkin'] = true
    table.insert(drinks.drink_table, {'melon', 'Melon', '#ef4646'})
    table.insert(drinks.drink_table, {'tomato', 'Tomato', '#d03a0e'})
+   table.insert(drinks.drink_table, {'pumpkin', 'Pumpkin', '#ffc04c'})
 end
 
 if minetest.get_modpath('farming') then
@@ -137,7 +139,7 @@ if minetest.get_modpath('farming') then
    table.insert(drinks.drink_table, {'carrot', 'Carrot', '#ed9121'})
    table.insert(drinks.drink_table, {'cucumber', 'Cucumber', '#73af59'})
    table.insert(drinks.drink_table, {'grapes', 'Grape', '#b20056'})
-   table.insert(drinks.drink_table, {'pumkin', 'Pumpkin', '#ffc04c'})
+   table.insert(drinks.drink_table, {'pumpkin', 'Pumpkin', '#ffc04c'})
    table.insert(drinks.drink_table, {'raspberries', 'Raspberry', '#C70039'})
    table.insert(drinks.drink_table, {'rhubarb', 'Rhubarb', '#fb8461'})
 end

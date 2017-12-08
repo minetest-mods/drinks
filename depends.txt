@@ -10,3 +10,4 @@ crops?
 farming?
 minetest_doc_modpack?
 fruits?
+ethereal?

@@ -155,6 +155,17 @@ if minetest.get_modpath('fruit') then
    table.insert(drinks.drink_table, {'orange', 'Orange', '#ffc417'})
 end
 
+if minetest.get_modpath('ethereal') then
+   drinks.juiceable['banana'] = true
+   drinks.juiceable['coconut'] = true
+   drinks.juiceable['orange'] = true
+   drinks.juiceable['strawberry'] = true
+   table.insert(drinks.drink_table, {'banana', 'Banana', '#eced9f'})
+   table.insert(drinks.drink_table, {'coconut', 'Coconut', '#ffffff'})
+   table.insert(drinks.drink_table, {'orange', 'Orange', '#ffc417'})
+   table.insert(drinks.drink_table, {'strawberry', 'Strawberry', '#ff3636'})
+end
+
 -- replace craftitem to node definition
 -- use existing node as template (e.g. 'vessel:glass_bottle')
 drinks.register_item = function( name, template, def )

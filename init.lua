@@ -117,6 +117,7 @@ end
 
 if minetest.get_modpath('crops') then
    drinks.juiceable['melon'] = true
+   drinks.juiceable['melon_slice'] = true
    drinks.juiceable['tomato'] = true
    drinks.juiceable['pumpkin'] = true
    table.insert(drinks.drink_table, {'melon', 'Melon', '#ef4646'})

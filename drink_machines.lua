@@ -300,16 +300,13 @@ minetest.register_node('drinks:juice_press', {
    end,
 })
 
-function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
+function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos, able_to_fill, leftover_count, outputstack)
    local meta = minetest.get_meta(pos)
    local fullness = tonumber(meta:get_string('fullness'))
-   if fullness - liq_vol < 0 then
-      return
-   else
    local fruit = meta:get_string('fruit')
    local fruit_name = meta:get_string('fruit_name')
    local inv = meta:get_inventory()
-   local fullness = fullness - liq_vol
+   local fullness = fullness - (liq_vol*able_to_fill)
    meta:set_string('fullness', fullness)
    meta:set_string('infotext', (math.floor((fullness/ves_vol)*100))..' % full of '..fruit_name..' juice.')
    if ves_vol == 128 then
@@ -318,48 +315,70 @@ function drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
       meta:set_string('formspec', drinks.liquid_storage_formspec(fruit_name, fullness, 256))
    end
    if ves_typ == 'jcu' or ves_typ == 'jbo' or ves_typ == 'jsb' or ves_typ == 'jbu' then
-      inv:set_stack('dst', 1, 'drinks:'..ves_typ..'_'..fruit)
+      inv:set_stack('dst', 1, 'drinks:'..ves_typ..'_'..fruit..' '..able_to_fill)
+      inv:set_stack('src', 1, outputstack..' '..leftover_count)
    elseif ves_typ == 'thirsty:bronze_canteen' then
       inv:set_stack('dst', 1, {name="thirsty:bronze_canteen", count=1, wear=60, metadata=""})
    elseif ves_typ == 'thirsty:steel_canteen' then
       inv:set_stack('dst', 1, {name="thirsty:steel_canteen", count=1, wear=40, metadata=""})
    end
+end
+
+function drinks.drinks_liquid_avail_sub(liq_vol, ves_typ, ves_vol, outputstack, pos, count)
+   local meta = minetest.get_meta(pos)
+   local fullness = tonumber(meta:get_string('fullness'))
+   if fullness - (liq_vol*count) < 0 then
+      local able_to_fill = math.floor(fullness/liq_vol)
+      local leftover_count = count - able_to_fill
+      print ('we can fill '..able_to_fill..' and have '..leftover_count..' remaining.')
+      drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos, able_to_fill, leftover_count, outputstack)
+   elseif fullness - (liq_vol*count) >= 0 then
+      drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos, count, 0, outputstack)
    end
 end
 
-function drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos)
+function drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos, inputcount, leftover_count, inputstack)
    local meta = minetest.get_meta(pos)
    local fullness = tonumber(meta:get_string('fullness'))
-   if fullness + liq_vol > ves_vol then
-      return
-   else
    local fruit = meta:get_string('fruit')
    local fruit_name = meta:get_string('fruit_name')
    local inv = meta:get_inventory()
-   local fullness = fullness + liq_vol
+   local fullness = fullness + (liq_vol*inputcount)
    meta:set_string('fullness', fullness)
-   inv:set_stack('src', 1, ves_typ)
+   inv:set_stack('src', 1, ves_typ..' '..inputcount)
+   inv:set_stack('dst', 1, inputstack..' '..leftover_count)
    meta:set_string('infotext', (math.floor((fullness/ves_vol)*100))..' % full of '..fruit_name..' juice.')
    if ves_vol == 256 then
       meta:set_string('formspec', drinks.liquid_storage_formspec(fruit_name, fullness, 256))
    elseif ves_vol == 128 then
       meta:set_string('formspec', drinks.liquid_storage_formspec(fruit_name, fullness, 128))
    end
+end
+
+function drinks.drinks_liquid_avail_add(liq_vol, ves_typ, ves_vol, pos, inputstack, inputcount)
+   local meta = minetest.get_meta(pos)
+   local fullness = tonumber(meta:get_string('fullness'))
+   if fullness + (liq_vol*inputcount) > ves_vol then
+      local avail_ves_vol = ves_vol - fullness
+      local can_empty = math.floor(avail_ves_vol/liq_vol)
+      local leftover_count = inputcount - can_empty
+      print ('we can use '..can_empty..' and have '..leftover_count..' remaining.')
+      drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos, can_empty, leftover_count, inputstack)
+   elseif fullness + (liq_vol*inputcount) <= ves_vol then
+      drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos, inputcount, 0, inputstack)
    end
 end
 
-
-
-function drinks.drinks_barrel(pos, inputstack)
+function drinks.drinks_barrel(pos, inputstack, inputcount)
    local meta = minetest.get_meta(pos)
    local vessel = string.sub(inputstack, 8, 10)
-   drinks.drinks_liquid_add(drinks.shortname[vessel].size, drinks.shortname[vessel].name, 128, pos)
+   drinks.drinks_liquid_avail_add(drinks.shortname[vessel].size, drinks.shortname[vessel].name, 128, pos, inputstack, inputcount)
 end
 
-function drinks.drinks_silo(pos, inputstack)
+function drinks.drinks_silo(pos, inputstack, inputcount)
    local meta = minetest.get_meta(pos)
    local vessel = string.sub(inputstack, 8, 10)
-   drinks.drinks_liquid_add(drinks.shortname[vessel].size, drinks.shortname[vessel].name, 256, pos)
+   drinks.drinks_liquid_avail_add(drinks.shortname[vessel].size, drinks.shortname[vessel].name, 256, pos, inputstack, inputcount)
 end
 
 minetest.register_node('drinks:liquid_barrel', {
@@ -404,10 +423,12 @@ minetest.register_node('drinks:liquid_barrel', {
    on_metadata_inventory_put = function(pos, listname, index, stack, player)
       local meta = minetest.get_meta(pos)
       local inv = meta:get_inventory()
-      local instack = inv:get_stack("src", 1)
+      local instack = inv:get_stack('src', 1)
       local outstack = inv:get_stack('dst', 1)
       local outputstack = outstack:get_name()
       local inputstack = instack:get_name()
+      local outputcount = outstack:get_count()
+      local inputcount = instack:get_count()
       local fruit = string.sub(inputstack, 12, -1)
       local fruit_in = meta:get_string('fruit')
       if fruit_in == 'empty' then
@@ -415,14 +436,14 @@ minetest.register_node('drinks:liquid_barrel', {
          local fruit_name = minetest.registered_nodes[instack:get_name()]
          meta:set_string('fruit_name', string.lower(fruit_name.juice_type))
          local vessel = string.sub(inputstack, 8, 10)
-         drinks.drinks_barrel(pos, inputstack)
+         drinks.drinks_barrel(pos, inputstack, inputcount)
       end
       if fruit == fruit_in then
          local vessel = string.sub(inputstack, 8, 10)
-         drinks.drinks_barrel(pos, inputstack)
+         drinks.drinks_barrel(pos, inputstack, inputcount)
       end
       if drinks.longname[outputstack] then
-         drinks.drinks_liquid_sub(drinks.longname[outputstack].size, drinks.longname[outputstack].name, 128, pos)
+         drinks.drinks_liquid_avail_sub(drinks.longname[outputstack].size, drinks.longname[outputstack].name, 128, outputstack, pos, outputcount)
       end
    end,
    on_receive_fields = function(pos, formname, fields, sender)
@@ -447,9 +468,9 @@ minetest.register_node('drinks:liquid_barrel', {
          return false
       end
    end,
-   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-      return 1
-   end,
+--   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+--      return 1
+--   end,
 })
 
 minetest.register_node('drinks:liquid_silo', {
@@ -498,6 +519,8 @@ minetest.register_node('drinks:liquid_silo', {
       local outstack = inv:get_stack('dst', 1)
       local outputstack = outstack:get_name()
       local inputstack = instack:get_name()
+      local outputcount = outstack:get_count()
+      local inputcount = instack:get_count()
       local fruit = string.sub(inputstack, 12, -1)
       local fruit_in = meta:get_string('fruit')
       if fruit_in == 'empty' then
@@ -505,14 +528,14 @@ minetest.register_node('drinks:liquid_silo', {
          local fruit_name = minetest.registered_nodes[instack:get_name()]
          meta:set_string('fruit_name', string.lower(fruit_name.juice_type))
          local vessel = string.sub(inputstack, 8, 10)
-         drinks.drinks_silo(pos, inputstack)
+         drinks.drinks_silo(pos, inputstack, inputcount)
       end
       if fruit == fruit_in then
          local vessel = string.sub(inputstack, 8, 10)
-         drinks.drinks_silo(pos, inputstack)
+         drinks.drinks_silo(pos, inputstack, inputcount)
       end
       if drinks.longname[outputstack] then
-         drinks.drinks_liquid_sub(drinks.longname[outputstack].size, drinks.longname[outputstack].name, 256, pos)
+         drinks.drinks_liquid_avail_sub(drinks.longname[outputstack].size, drinks.longname[outputstack].name, 256, outputstack, pos, outputcount)
       end
    end,
    on_receive_fields = function(pos, formname, fields, sender)
@@ -537,7 +560,7 @@ minetest.register_node('drinks:liquid_silo', {
          return false
       end
    end,
-   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
-      return 1
-   end,
+--   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+--      return 1
+--   end,
 })

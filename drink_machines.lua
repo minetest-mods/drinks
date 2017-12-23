@@ -219,7 +219,7 @@ minetest.register_node('drinks:juice_press', {
             else
                local fullness = fullness + 2
                meta_u:set_string('fullness', fullness)
-               meta_u:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/128)*100))..' % full.')
+               meta_u:set_string('infotext', (math.floor((fullness/128)*100))..' % full of '..fruit..' juice.')
                meta_u:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 128))
                if instack:get_count() >= 2 then
                   timer:start(4)
@@ -239,7 +239,7 @@ minetest.register_node('drinks:juice_press', {
             else
                local fullness = fullness + 2
                meta_u:set_string('fullness', fullness)
-               meta_u:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/256)*100))..' % full.')
+               meta_u:set_string('infotext', (math.floor((fullness/256)*100))..' % full of '..fruit..' juice.')
                meta_u:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 256))
                if instack:get_count() >= 2 then
                   timer:start(4)

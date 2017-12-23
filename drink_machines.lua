@@ -53,18 +53,18 @@ local press_running_formspec =
    'list[current_name;dst;6.5,1.5;1,1;]'..
    'list[current_player;main;0,3;8,4;]'
 
-   local press_error_formspec =
-      'size[8,7]'..
-      'label[1.5,0;You need to add more fruit.]' ..
-      'label[4.3,.75;Put fruit here ->]'..
-      'label[3.5,1.75;Put container here ->]'..
-      'label[0.2,1.8;4 fruits to a glass,]'..
-      'label[0.2,2.1;8 fruits to a bottle,]'..
-      'label[0.2,2.4;16 fruits to a bucket.]'..
-      'button[1,1;2,1;press;Start Juicing]'..
-      'list[current_name;src;6.5,.5;1,1;]'..
-      'list[current_name;dst;6.5,1.5;1,1;]'..
-      'list[current_player;main;0,3;8,4;]'
+local press_error_formspec =
+   'size[8,7]'..
+   'label[1.5,0;You need to add more fruit.]' ..
+   'label[4.3,.75;Put fruit here ->]'..
+   'label[3.5,1.75;Put container here ->]'..
+   'label[0.2,1.8;4 fruits to a glass,]'..
+   'label[0.2,2.1;8 fruits to a bottle,]'..
+   'label[0.2,2.4;16 fruits to a bucket.]'..
+   'button[1,1;2,1;press;Start Juicing]'..
+   'list[current_name;src;6.5,.5;1,1;]'..
+   'list[current_name;dst;6.5,1.5;1,1;]'..
+   'list[current_player;main;0,3;8,4;]'
 
 minetest.register_node('drinks:juice_press', {
    description = 'Juice Press',
@@ -158,10 +158,24 @@ minetest.register_node('drinks:juice_press', {
                if instack:get_count() >= 2 then
                   local under_node = {x=pos.x, y=pos.y-1, z=pos.z}
                   local under_node_name = minetest.get_node_or_nil(under_node)
+                  local under_node_2 = {x=pos.x, y=pos.y-2, z=pos.z}
+                  local under_node_name_2 = minetest.get_node_or_nil(under_node_2)
                   if under_node_name.name == 'drinks:liquid_barrel' then
                      local meta_u = minetest.get_meta(under_node)
-                     local barrel_fruit = meta_u:get_string('fruit')
-                     if fruit == barrel_fruit or barrel_fruit == 'empty' then
+                     local stored_fruit = meta_u:get_string('fruit')
+                     if fruit == stored_fruit or stored_fruit == 'empty' then
+                        meta:set_string('container', 'tube')
+                        meta:set_string('fruitnumber', 2)
+                        meta:set_string('infotext', 'Juicing...')
+                        meta_u:set_string('fruit', fruit)
+                        timer:start(4)
+                     else
+                        meta:set_string('infotext', "You can't mix juices.")
+                     end
+                  elseif under_node_name_2.name == 'drinks:liquid_silo' then
+                     local meta_u = minetest.get_meta(under_node_2)
+                     local stored_fruit = meta_u:get_string('fruit')
+                     if fruit == stored_fruit or stored_fruit == 'empty' then
                         meta:set_string('container', 'tube')
                         meta:set_string('fruitnumber', 2)
                         meta:set_string('infotext', 'Juicing...')
@@ -191,32 +205,56 @@ minetest.register_node('drinks:juice_press', {
          local timer = minetest.get_node_timer(pos)
          local under_node = {x=pos.x, y=pos.y-1, z=pos.z}
          local under_node_name = minetest.get_node_or_nil(under_node)
-         local meta_u = minetest.get_meta(under_node)
-         local fullness = tonumber(meta_u:get_string('fullness'))
-         instack:take_item(tonumber(fruitnumber))
-         inv:set_stack('src', 1, instack)
-         if fullness + 2 > 128 then
-            timer:stop()
-            meta:set_string('infotext', 'Barrel is full of juice.')
-            return
-         else
-         local fullness = fullness + 2
-         meta_u:set_string('fullness', fullness)
-         meta_u:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/128)*100))..' % full.')
-         meta_u:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 128))
-         if instack:get_count() >= 2 then
-            timer:start(4)
-         else
-            meta:set_string('infotext', 'You need more fruit.')
+         local under_node_2 = {x=pos.x, y=pos.y-2, z=pos.z}
+         local under_node_name_2 = minetest.get_node_or_nil(under_node_2)
+         if under_node_name.name == 'drinks:liquid_barrel' then
+            local meta_u = minetest.get_meta(under_node)
+            local fullness = tonumber(meta_u:get_string('fullness'))
+            instack:take_item(tonumber(fruitnumber))
+            inv:set_stack('src', 1, instack)
+            if fullness + 2 > 128 then
+               timer:stop()
+               meta:set_string('infotext', 'Barrel is full of juice.')
+               return
+            else
+               local fullness = fullness + 2
+               meta_u:set_string('fullness', fullness)
+               meta_u:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/128)*100))..' % full.')
+               meta_u:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 128))
+               if instack:get_count() >= 2 then
+                  timer:start(4)
+               else
+                  meta:set_string('infotext', 'You need more fruit.')
+               end
+            end
+         elseif under_node_name_2.name == 'drinks:liquid_silo' then
+            local meta_u = minetest.get_meta(under_node_2)
+            local fullness = tonumber(meta_u:get_string('fullness'))
+            instack:take_item(tonumber(fruitnumber))
+            inv:set_stack('src', 1, instack)
+            if fullness + 2 > 256 then
+               timer:stop()
+               meta:set_string('infotext', 'Silo is full of juice.')
+               return
+            else
+               local fullness = fullness + 2
+               meta_u:set_string('fullness', fullness)
+               meta_u:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/256)*100))..' % full.')
+               meta_u:set_string('formspec', drinks.liquid_storage_formspec(fruit, fullness, 256))
+               if instack:get_count() >= 2 then
+                  timer:start(4)
+               else
+                  meta:set_string('infotext', 'You need more fruit.')
+               end
+            end
          end
-      end
       else
       meta:set_string('infotext', 'Collect your juice.')
       meta:set_string('formspec', press_idle_formspec)
       instack:take_item(tonumber(fruitnumber))
       inv:set_stack('src', 1, instack)
       inv:set_stack('dst', 1 ,'drinks:'..container..fruit)
-   end
+      end
    end,
    on_metadata_inventory_take = function(pos, listname, index, stack, player)
       local timer = minetest.get_node_timer(pos)

@@ -468,9 +468,29 @@ minetest.register_node('drinks:liquid_barrel', {
          return false
       end
    end,
---   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
---      return 1
---   end,
+   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+      local meta = minetest.get_meta(pos)
+      if listname == 'src' then --adding liquid
+         local inputstack = stack:get_name()
+         local inputcount = stack:get_count()
+         local valid = string.sub(inputstack, 1, 8)
+         if valid == 'drinks:j' then
+            return inputcount
+         else
+            return 0
+         end
+      elseif listname == 'dst' then --removing liquid
+         local inputstack = stack:get_name()
+         local inputcount = stack:get_count()
+         local valid = string.sub(inputstack, 1, 7)
+         print (valid)
+         if valid == 'vessels' or valid == 'bucket:' then
+            return inputcount
+         else
+            return 0
+         end
+      end
+   end,
 })
 
 minetest.register_node('drinks:liquid_silo', {
@@ -560,7 +580,27 @@ minetest.register_node('drinks:liquid_silo', {
          return false
       end
    end,
---   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
---      return 1
---   end,
+   allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+      local meta = minetest.get_meta(pos)
+      if listname == 'src' then --adding liquid
+         local inputstack = stack:get_name()
+         local inputcount = stack:get_count()
+         local valid = string.sub(inputstack, 1, 8)
+         if valid == 'drinks:j' then
+            return inputcount
+         else
+            return 0
+         end
+      elseif listname == 'dst' then --removing liquid
+         local inputstack = stack:get_name()
+         local inputcount = stack:get_count()
+         local valid = string.sub(inputstack, 1, 7)
+         print (valid)
+         if valid == 'vessels' or valid == 'bucket:' then
+            return inputcount
+         else
+            return 0
+         end
+      end
+   end,
 })

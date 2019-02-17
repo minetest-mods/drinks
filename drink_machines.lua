@@ -330,7 +330,6 @@ function drinks.drinks_liquid_avail_sub(liq_vol, ves_typ, ves_vol, outputstack, 
    if fullness - (liq_vol*count) < 0 then
       local able_to_fill = math.floor(fullness/liq_vol)
       local leftover_count = count - able_to_fill
-      print ('we can fill '..able_to_fill..' and have '..leftover_count..' remaining.')
       drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos, able_to_fill, leftover_count, outputstack)
    elseif fullness - (liq_vol*count) >= 0 then
       drinks.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos, count, 0, outputstack)
@@ -362,7 +361,6 @@ function drinks.drinks_liquid_avail_add(liq_vol, ves_typ, ves_vol, pos, inputsta
       local avail_ves_vol = ves_vol - fullness
       local can_empty = math.floor(avail_ves_vol/liq_vol)
       local leftover_count = inputcount - can_empty
-      print ('we can use '..can_empty..' and have '..leftover_count..' remaining.')
       drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos, can_empty, leftover_count, inputstack)
    elseif fullness + (liq_vol*inputcount) <= ves_vol then
       drinks.drinks_liquid_add(liq_vol, ves_typ, ves_vol, pos, inputcount, 0, inputstack)
@@ -483,7 +481,6 @@ minetest.register_node('drinks:liquid_barrel', {
          local inputstack = stack:get_name()
          local inputcount = stack:get_count()
          local valid = string.sub(inputstack, 1, 7)
-         print (valid)
          if valid == 'vessels' or valid == 'bucket:' then
             return inputcount
          else
@@ -595,7 +592,6 @@ minetest.register_node('drinks:liquid_silo', {
          local inputstack = stack:get_name()
          local inputcount = stack:get_count()
          local valid = string.sub(inputstack, 1, 7)
-         print (valid)
          if valid == 'vessels' or valid == 'bucket:' then
             return inputcount
          else

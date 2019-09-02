@@ -478,11 +478,17 @@ minetest.register_node('drinks:liquid_barrel', {
             return 0
          end
       elseif listname == 'dst' then --removing liquid
-         local inputstack = stack:get_name()
-         local inputcount = stack:get_count()
-         local valid = string.sub(inputstack, 1, 7)
-         if valid == 'vessels' or valid == 'bucket:' then
-            return inputcount
+         --make sure there is a liquid to remove
+         local juice = meta:get_string('fruit')
+         if juice ~= 'empty' then
+            local inputstack = stack:get_name()
+            local inputcount = stack:get_count()
+            local valid = string.sub(inputstack, 1, 7)
+            if valid == 'vessels' or valid == 'bucket:' then
+               return inputcount
+            else
+               return 0
+            end
          else
             return 0
          end
@@ -589,11 +595,17 @@ minetest.register_node('drinks:liquid_silo', {
             return 0
          end
       elseif listname == 'dst' then --removing liquid
-         local inputstack = stack:get_name()
-         local inputcount = stack:get_count()
-         local valid = string.sub(inputstack, 1, 7)
-         if valid == 'vessels' or valid == 'bucket:' then
-            return inputcount
+         --make sure there is liquid to take_item
+         local juice = meta:get_string('fruit')
+         if juice ~= 'empty' then
+            local inputstack = stack:get_name()
+            local inputcount = stack:get_count()
+            local valid = string.sub(inputstack, 1, 7)
+            if valid == 'vessels' or valid == 'bucket:' then
+               return inputcount
+            else
+               return 0
+            end
          else
             return 0
          end

@@ -77,8 +77,10 @@ longname = {
 if minetest.get_modpath('default') then
    drinks.juiceable['apple'] = true -- Name of fruit to make juiceable.
    drinks.juiceable['cactus'] = true
+   drinks.juiceable['blueberries'] = true
    table.insert(drinks.drink_table, {'apple', 'Apple', '#ecff56'})
    table.insert(drinks.drink_table, {'cactus', 'Cactus', '#96F97B'})
+   table.insert(drinks.drink_table, {'blueberries', 'Blueberry', '#521dcb'})
 end
 
 if minetest.get_modpath('bushes_classic') then
@@ -136,6 +138,9 @@ if minetest.get_modpath('farming') then
    drinks.juiceable['pumpkin_slice'] = true
    drinks.juiceable['raspberries'] = true
    drinks.juiceable['rhubarb'] = true
+   drinks.juiceable['blueberries'] = true
+   drinks.juiceable['pineapple'] = true
+   drinks.juiceable['pineapple_ring'] = true
    table.insert(drinks.drink_table, {'melon', 'Melon', '#ef4646'})
    table.insert(drinks.drink_table, {'tomato', 'Tomato', '#990000'})
    table.insert(drinks.drink_table, {'carrot', 'Carrot', '#ed9121'})
@@ -144,6 +149,8 @@ if minetest.get_modpath('farming') then
    table.insert(drinks.drink_table, {'pumpkin', 'Pumpkin', '#ffc04c'})
    table.insert(drinks.drink_table, {'raspberries', 'Raspberry', '#C70039'})
    table.insert(drinks.drink_table, {'rhubarb', 'Rhubarb', '#fb8461'})
+   table.insert(drinks.drink_table, {'blueberries', 'Blueberry', '#521dcb'})
+   table.insert(drinks.drink_table, {'pineapple', 'Pineapple', '#dcd611'})
 end
 
 if minetest.get_modpath('fruit') then

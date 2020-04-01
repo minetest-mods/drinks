@@ -151,6 +151,8 @@ if minetest.get_modpath('farming') then
    table.insert(drinks.drink_table, {'rhubarb', 'Rhubarb', '#fb8461'})
    table.insert(drinks.drink_table, {'blueberries', 'Blueberry', '#521dcb'})
    table.insert(drinks.drink_table, {'pineapple', 'Pineapple', '#dcd611'})
+   minetest.register_alias_force('farming:carrot_juice', 'drinks:jcu_carrot')
+   minetest.register_alias_force('farming:pineapple_juice', 'drinks:jcu_pineapple')
 end
 
 if minetest.get_modpath('fruit') then

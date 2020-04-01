@@ -132,7 +132,8 @@ if minetest.get_modpath('farming') then
    drinks.juiceable['carrot'] = true
    drinks.juiceable['cucumber'] = true
    drinks.juiceable['grapes'] = true
-   drinks.juiceable['pumpkin'] = true
+   drinks.juiceable['pumpkin_8'] = true
+   drinks.juiceable['pumpkin_slice'] = true
    drinks.juiceable['raspberries'] = true
    drinks.juiceable['rhubarb'] = true
    table.insert(drinks.drink_table, {'melon', 'Melon', '#ef4646'})
@@ -159,6 +160,7 @@ end
 if minetest.get_modpath('ethereal') then
    drinks.juiceable['banana'] = true
    drinks.juiceable['coconut'] = true
+   drinks.juiceable['coconut_slice'] = true
    drinks.juiceable['orange'] = true
    drinks.juiceable['strawberry'] = true
    table.insert(drinks.drink_table, {'banana', 'Banana', '#eced9f'})

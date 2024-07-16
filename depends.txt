@@ -9,5 +9,5 @@ farming_plus?
 crops?
 farming?
 minetest_doc_modpack?
-fruits?
+fruit?
 ethereal?

@@ -5,10 +5,10 @@ function applyModSupport()
    local moreblocks_found = false
    local technic_worldgen = false
 
-   local modnames = minetest.get_modnames()
+   local modnames = core.get_modnames()
 
    for i, name in ipairs(modnames) do
-      -- minetest.log("[Mod] " .. name)
+      -- core.log("[Mod] " .. name)
       if name == "moreblocks" then
          moreblocks_found = true
       end
@@ -19,8 +19,8 @@ function applyModSupport()
    end
 
    if moreblocks_found == true and technic_worldgen == true then
-      minetest.log("applying patch to mod " .. minetest.get_current_modname())
-      minetest.log("converting '" .. slab_str .. "' to 'moreblocks:slab_wood'")
+      core.log("applying patch to mod " .. core.get_current_modname())
+      core.log("converting '" .. slab_str .. "' to 'moreblocks:slab_wood'")
       slab_str = "moreblocks:slab_wood"
    end
 end
@@ -29,7 +29,7 @@ end
 --Craft Recipes
 
 -- added mod-support
-minetest.register_craft({
+core.register_craft({
       output = 'drinks:juice_press',
       recipe = {
          {'default:stick', 'default:steel_ingot', 'default:stick'},
@@ -39,7 +39,7 @@ minetest.register_craft({
 })
 
 -- added mod-support
-minetest.register_craft({
+core.register_craft({
       output = 'drinks:liquid_barrel',
       recipe = {
          {'group:wood', 'group:wood', 'group:wood'},
@@ -74,7 +74,7 @@ longname = {
 -- The table should follow this scheme: internal name, Displayed name, colorize code.
 -- Check out the drinks.lua file for more info how how the colorize code is used.
 
-if minetest.get_modpath('default') then
+if core.get_modpath('default') then
    drinks.juiceable['apple'] = true -- Name of fruit to make juiceable.
    drinks.juiceable['cactus'] = true
    drinks.juiceable['blueberries'] = true
@@ -83,7 +83,7 @@ if minetest.get_modpath('default') then
    table.insert(drinks.drink_table, {'blueberries', 'Blueberry', '#521dcb'})
 end
 
-if minetest.get_modpath('bushes_classic') then
+if core.get_modpath('bushes_classic') then
    drinks.juiceable['blackberry'] = true
    drinks.juiceable['blueberry'] = true
    drinks.juiceable['gooseberry'] = true
@@ -96,7 +96,7 @@ if minetest.get_modpath('bushes_classic') then
    table.insert(drinks.drink_table, {'strawberry', 'Strawberry', '#ff3636'})
 end
 
-if minetest.get_modpath('farming_plus') then
+if core.get_modpath('farming_plus') then
    drinks.juiceable['banana'] = true
    drinks.juiceable['melon'] = true
    drinks.juiceable['lemon_item'] = true
@@ -117,7 +117,7 @@ if minetest.get_modpath('farming_plus') then
    table.insert(drinks.drink_table, {'raspberry', 'Raspberry', '#C70039'})
 end
 
-if minetest.get_modpath('crops') then
+if core.get_modpath('crops') then
    drinks.juiceable['melon'] = true
    drinks.juiceable['melon_slice'] = true
    drinks.juiceable['tomato'] = true
@@ -127,7 +127,7 @@ if minetest.get_modpath('crops') then
    table.insert(drinks.drink_table, {'pumpkin', 'Pumpkin', '#ffc04c'})
 end
 
-if minetest.get_modpath('farming') then
+if core.get_modpath('farming') then
    drinks.juiceable['melon_8'] = true
    drinks.juiceable['melon_slice'] = true
    drinks.juiceable['tomato'] = true
@@ -157,11 +157,11 @@ if minetest.get_modpath('farming') then
    table.insert(drinks.drink_table, {'blueberries', 'Blueberry', '#521dcb'})
    table.insert(drinks.drink_table, {'blackberry', 'Blackberry', '#581845'})
    table.insert(drinks.drink_table, {'strawberry', 'Strawberry', '#ff3636'})
-   minetest.register_alias_force('farming:carrot_juice', 'drinks:jcu_carrot')
-   minetest.register_alias_force('farming:pineapple_juice', 'drinks:jcu_pineapple')
+   core.register_alias_force('farming:carrot_juice', 'drinks:jcu_carrot')
+   core.register_alias_force('farming:pineapple_juice', 'drinks:jcu_pineapple')
 end
 
-if minetest.get_modpath('fruit') then
+if core.get_modpath('fruit') then
    drinks.juiceable['pear'] = true
    drinks.juiceable['plum'] = true
    drinks.juiceable['peach'] = true
@@ -172,7 +172,7 @@ if minetest.get_modpath('fruit') then
    table.insert(drinks.drink_table, {'orange', 'Orange', '#ffc417'})
 end
 
-if minetest.get_modpath('ethereal') then
+if core.get_modpath('ethereal') then
    drinks.juiceable['banana'] = true
    drinks.juiceable['coconut'] = true
    drinks.juiceable['coconut_slice'] = true
@@ -187,7 +187,7 @@ end
 -- replace craftitem to node definition
 -- use existing node as template (e.g. 'vessel:glass_bottle')
 drinks.register_item = function( name, template, def )
-   local template_def = minetest.registered_nodes[template]
+   local template_def = core.registered_nodes[template]
    if template_def then
    local drinks_def = table.copy(template_def)
 
@@ -208,15 +208,15 @@ drinks.register_item = function( name, template, def )
       drinks_def.tiles = { drinks_def.inventory_image }
    end
 
-   minetest.register_node( name, drinks_def )
+   core.register_node( name, drinks_def )
    end
 end
 
 
-if minetest.get_modpath('thirsty') then
-   dofile(minetest.get_modpath('drinks')..'/drinks.lua')
+if core.get_modpath('thirsty') then
+   dofile(core.get_modpath('drinks')..'/drinks.lua')
 else
-   dofile(minetest.get_modpath('drinks')..'/drinks2.lua')
+   dofile(core.get_modpath('drinks')..'/drinks2.lua')
 end
-dofile(minetest.get_modpath('drinks')..'/drink_machines.lua')
-dofile(minetest.get_modpath('drinks')..'/formspecs.lua')
+dofile(core.get_modpath('drinks')..'/drink_machines.lua')
+dofile(core.get_modpath('drinks')..'/formspecs.lua')
